@@ -1,11 +1,11 @@
 import * as React from "react"
 
 import DreamFightLogo from '../components/DreamFightLogo';
-import hero from "../images/hero.png";
+import HeroImageView from '../components/HeroImageView.tsx';
 
 const IndexPage = () => {
   return (
-    <div className="relative bg-black overflow-hidden">
+    <HeroImageView>
       <div className="max-w-7xl mx-auto">
         <div className="relative z-10 pb-8 bg-black sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
           <main className="mx-auto px-10">
@@ -35,11 +35,8 @@ const IndexPage = () => {
             </div>
           </main>
         </div>
-        <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-          <img className="w-full object-cover" src={hero} alt="" />
-        </div>
       </div>
-    </div>
+    </HeroImageView>
   )
 }
 
