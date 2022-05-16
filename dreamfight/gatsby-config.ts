@@ -1,3 +1,4 @@
+import path from 'path'
 import type { GatsbyConfig } from "gatsby"
 
 const config: GatsbyConfig = {
@@ -5,7 +6,13 @@ const config: GatsbyConfig = {
     siteUrl: `https://www.yourdomain.tld`,
   },
   plugins: [
-    'gatsby-plugin-postcss',
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
+        path: path.join(__dirname, `src`, `images`),
+      },
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
@@ -18,7 +25,10 @@ const config: GatsbyConfig = {
         // Any invalid keyword or empty string defaults to `anonymous`
         crossOrigin: `use-credentials`,
       },
-    }
+    },
+    'gatsby-plugin-postcss',
+    'gatsby-plugin-sharp',
+    'gatsby-transformer-sharp',
   ],
 }
 
