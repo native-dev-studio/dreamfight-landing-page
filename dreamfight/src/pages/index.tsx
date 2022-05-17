@@ -26,7 +26,7 @@ const IndexPage = () => {
     <div className="flex justify-between lg:flex-row-reverse sm:flex-col-reverse flex-col-reverse">
       <GatsbyImage image={image} imgStyle={{ objectPosition: 'right top' }} className="h-screen" alt=""/>
       <div className="relative z-10 pb-8 bg-black sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-        <main className="mx-auto px-10">
+        <main className="mx-auto px-20">
           <div className="text-left">
             <div className='my-10'>
               <DreamFightLogo />
