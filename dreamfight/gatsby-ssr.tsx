@@ -3,8 +3,10 @@ import type { GatsbySSR } from "gatsby"
 
 export const onPreRenderHTML: GatsbySSR["onPreRenderHTML"] = ({ getHeadComponents, replaceHeadComponents }) => {
   const headComponents = getHeadComponents();
+  const key = headComponents.length;
+
   replaceHeadComponents([
     ...headComponents,
-    <title>Dream Fight</title>
+    <title key={key}>Dream Fight</title>
   ])
 }
