@@ -1,7 +1,6 @@
-import path from 'path'
-import type { GatsbyConfig } from "gatsby"
+const path = require('path');
 
-const config: GatsbyConfig = {
+const config = {
   siteMetadata: {
     siteUrl: `https://www.yourdomain.tld`,
   },
@@ -33,4 +32,4 @@ const config: GatsbyConfig = {
   ],
 }
 
-export default config
+module.exports = config
