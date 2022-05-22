@@ -31,7 +31,7 @@ const IndexPage = () => {
             <div className='my-10'>
               <DreamFightLogo />
             </div>
-            <h1 className="mt-16 mb-8 text-white text-6xl tracking-tight font-extrabold">
+            <h1 className="italic mt-16 mb-8 text-white text-6xl tracking-tight font-extrabold">
               Get in the game
             </h1>
             <p className="my-3 text-white sm:mt-5 sm:text-lg md:mt-5 md:text-xl lg:mx-0 text-white">
