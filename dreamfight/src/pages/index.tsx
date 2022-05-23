@@ -1,40 +1,18 @@
 import * as React from "react"
 
 import DreamFightLogo from '../components/DreamFightLogo';
-import HeroImageView from '../components/HeroImageView.tsx';
-import heroImageSrc from '../images/hero.png';
+import HeroImage from '../components/HeroImage';
 import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 
 const IndexPage = () => {
-  const data = useStaticQuery(graphql`
-    query {
-      hero: file(relativePath: { eq: "hero.png" }) {
-        childImageSharp {
-          gatsbyImageData(
-            placeholder: BLURRED
-            formats: [AUTO, WEBP, AVIF]
-          )
-        }
-      }
-    }
-  `);
-
-  const image = getImage(data.hero);
-
   return (
-    <section className="flex justify-center
-      md:flex-row-reverse md:items-start items-center flex-col-reverse"
+    <section className="
+      flex justify-center
+      flex-col-reverse items-center 
+      md:flex-row-reverse md:items-start"
     >
-      { /* @ts-ignore: Type 'undefined' is not assignable */ }
-      <GatsbyImage image={image}
-        imgStyle={{ 
-          objectFit: 'contain',
-          objectPosition: 'left top'
-        }} 
-        className="max-w-full sm:max-w-[50%] h-screen"
-        alt="A tennis player in a game"
-      />
+      <HeroImage className="max-w-full sm:max-w-[50%] h-screen" />
       <main className="max-w-lg mb-10 px-10">
         <DreamFightLogo className='my-5'/>
         <h1 className="
