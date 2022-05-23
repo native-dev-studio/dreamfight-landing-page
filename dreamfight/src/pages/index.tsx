@@ -32,26 +32,22 @@ const IndexPage = () => {
           objectFit: 'contain',
           objectPosition: 'left top'
         }} 
-        className="
-        max-w-full sm:max-w-[50%] h-screen
-        "
-        alt=""
+        className="max-w-full sm:max-w-[50%] h-screen"
+        alt="A tennis player in a game"
       />
       <main className="max-w-lg mb-10 px-10">
-        <div className='my-5'>
-          <DreamFightLogo />
-        </div>
+        <DreamFightLogo className='my-5'/>
         <h1 className="
           mt-4 sm:mt-8 2xl:mt-16 
           mb-8 
           italic text-white tracking-tight font-extrabold
-          ">
+        ">
           Get in the game
         </h1>
         <p className="
           my-3 text-white sm:mt-5 md:mt-5 lg:mx-0
-          ">
-          DreamFight is a new sports game augmented over live broadcast. We're bringing back the magic of sports and gaming.
+        ">
+          DreamFight is a new type of sports game augmented over live broadcast. We're bringing back the magic of sports and gaming.
         </p>
         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center justify-start">
           <div className="w-full">
