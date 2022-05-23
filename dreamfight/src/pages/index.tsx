@@ -24,7 +24,7 @@ const IndexPage = () => {
 
   return (
     <section className="flex justify-center
-      md:flex-row-reverse flex-col-reverse"
+      md:flex-row-reverse md:items-start items-center flex-col-reverse"
     >
       { /* @ts-ignore: Type 'undefined' is not assignable */ }
       <GatsbyImage image={image}
@@ -32,12 +32,14 @@ const IndexPage = () => {
           objectFit: 'contain',
           objectPosition: 'left top'
         }} 
-        className="max-w-[50%] h-screen"
+        className="
+        max-w-full sm:max-w-[50%] h-screen
+        "
         alt=""
       />
-      <main className="max-w-lg px-10">
+      <main className="max-w-lg mb-10 px-10">
         <div className="text-left">
-          <div className='my-10'>
+          <div className='my-5'>
             <DreamFightLogo />
           </div>
           <h1 className="
