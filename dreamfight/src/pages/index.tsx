@@ -52,8 +52,8 @@ const IndexPage = () => {
         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center justify-start">
           <div className="w-full">
             <div className='
-              text-md
-              my-3 font-bold
+              text-lg
+              my-3 font-semibold
             '>
               Sign up for early access
             </div>
