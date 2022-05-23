@@ -73,7 +73,7 @@ const IndexPage = () => {
             </div>
           </div>
         </div>
-        <div className='mt-10 text-gray-600 italic text-sm'>
+        <div className='mt-5 sm:mt-10 text-gray-600 italic text-sm'>
           © 2022 DreamFight Inc. All rights reserved.
         </div>
       </main>
