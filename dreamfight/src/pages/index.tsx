@@ -9,10 +9,9 @@ const IndexPage = () => {
   return (
     <section className="
       flex justify-center
-      flex-col-reverse items-center 
-      md:flex-row-reverse md:items-start"
+      flex-col items-center 
+      md:flex-row md:items-start"
     >
-      <HeroImage className="max-w-full sm:max-w-[50%] h-screen" />
       <main className="max-w-lg mb-10 px-10">
         <DreamFightLogo className='my-5'/>
         <h1 className="
@@ -55,6 +54,7 @@ const IndexPage = () => {
           © 2022 DreamFight Inc. All rights reserved.
         </div>
       </main>
+      <HeroImage className="max-w-full sm:max-w-[40%] h-screen" />
     </section>
   )
 }
