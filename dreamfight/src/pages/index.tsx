@@ -58,7 +58,12 @@ const IndexPage = () => {
               Sign up for early access
             </div>
             <div className='flex flex-col sm:flex-row sm:space-x-4 w-3xl font-large'>
-              <input type="text" className="py-3 mb-3 sm:mb-0 focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded text-lg px-3" placeholder="Enter your email"/>
+              <input type="text" 
+                className="
+                  py-3 mb-3 text-black sm:mb-0 focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded text-lg px-3
+                "
+                placeholder="Enter your email"
+              />
               <button className='
                 px-8 py-3 whitespace-nowrap bg-purple rounded
                 text-lg sm:text-md
