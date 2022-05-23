@@ -40,12 +40,12 @@ const IndexPage = () => {
         <h1 className="
           mt-4 sm:mt-8 2xl:mt-16 
           mb-8 
-          italic text-white tracking-tight font-extrabold
+          italic tracking-tight font-extrabold
         ">
           Get in the game
         </h1>
         <p className="
-          my-3 text-white sm:mt-5 md:mt-5 lg:mx-0
+          my-3 sm:mt-5 md:mt-5 lg:mx-0
         ">
           DreamFight is a new type of sports game augmented over live broadcast. We're bringing back the magic of sports and gaming.
         </p>
@@ -53,21 +53,24 @@ const IndexPage = () => {
           <div className="w-full">
             <div className='
               text-md
-              my-3 text-white font-bold
+              my-3 font-bold
             '>
               Sign up for early access
             </div>
             <div className='flex flex-col sm:flex-row sm:space-x-4 w-3xl font-large'>
               <input type="text" className="py-3 mb-3 sm:mb-0 focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded text-lg px-3" placeholder="Enter your email"/>
               <button className='
-                px-8 py-3 whitespace-nowrap text-white bg-purple rounded
+                px-8 py-3 whitespace-nowrap bg-purple rounded
                 text-lg sm:text-md
               '>
                 Sign up
               </button>
             </div>
           </div>
-          </div>
+        </div>
+        <div className='mt-10 text-gray-600 italic text-sm'>
+          © 2022 DreamFight Inc. All rights reserved.
+        </div>
       </main>
     </section>
   )

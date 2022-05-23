@@ -4,11 +4,11 @@
 
 @layer base {
   body {
-    @apply bg-black;
+    @apply bg-black text-white
   }
   
   h1 {
-    @apply text-6xl sm:text-6xl md:text-7xl 2xl:text-8xl;
+    @apply text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl;
   }
 
   p {
