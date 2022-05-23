@@ -60,7 +60,7 @@ const IndexPage = () => {
             <div className='flex flex-col sm:flex-row sm:space-x-4 w-3xl font-large'>
               <input type="text" 
                 className="
-                  py-3 mb-3 text-black sm:mb-0 focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded text-lg px-3
+                  py-3 mb-3 text-black sm:mb-0 focus:ring-red focus:border-red flex-1 block w-full rounded text-lg px-3
                 "
                 placeholder="Enter your email"
               />
