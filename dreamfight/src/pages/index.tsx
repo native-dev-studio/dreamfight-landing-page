@@ -8,10 +8,9 @@ import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 const IndexPage = () => {
   return (
     <section className="
-      flex justify-center
-      flex-col items-center 
-      md:flex-row md:items-start"
-    >
+      flex flex-col justify-center items-center 
+      md:flex-row md:items-start
+    ">
       <main className="max-w-lg mb-10 px-10">
         <DreamFightLogo className='my-5'/>
         <h1 className="
