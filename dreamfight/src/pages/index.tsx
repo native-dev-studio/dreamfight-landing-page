@@ -27,7 +27,14 @@ const IndexPage = () => {
       md:flex-row-reverse flex-col-reverse"
     >
       { /* @ts-ignore: Type 'undefined' is not assignable */ }
-      <GatsbyImage image={image} imgStyle={{ objectFit: 'contain', objectPosition: 'left top' }} className="h-screen" alt=""/>
+      <GatsbyImage image={image}
+        imgStyle={{ 
+          objectFit: 'contain',
+          objectPosition: 'left top'
+        }} 
+        className="max-w-[50%] h-screen"
+        alt=""
+      />
       <main className="max-w-lg px-10">
         <div className="text-left">
           <div className='my-10'>
