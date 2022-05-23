@@ -3,11 +3,13 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    colors: {
-      transparent: 'transparent',
-      purple: '#e64fdc',
-      white: '#ffffff',
-      black: '#000000',
+    extend: {
+      colors: {
+        transparent: 'transparent',
+        purple: '#e64fdc',
+        white: '#ffffff',
+        black: '#000000',
+      }
     }
   },
   plugins: [],

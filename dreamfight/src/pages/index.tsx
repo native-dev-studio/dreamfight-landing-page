@@ -54,7 +54,7 @@ const IndexPage = () => {
             <div className='
               text-md
               my-3 text-white font-bold
-              '>
+            '>
               Sign up for early access
             </div>
             <div className='flex flex-col sm:flex-row sm:space-x-4 w-3xl font-large'>
@@ -62,7 +62,7 @@ const IndexPage = () => {
               <button className='
                 px-8 py-3 whitespace-nowrap text-white bg-purple rounded
                 text-lg sm:text-md
-                '>
+              '>
                 Sign up
               </button>
             </div>
