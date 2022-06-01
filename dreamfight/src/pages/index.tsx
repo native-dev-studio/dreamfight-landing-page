@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { Link } from 'gatsby';
 import DreamFightLogo from '../components/DreamFightLogo';
 import HeroImage from '../components/HeroImage';
 import { graphql, useStaticQuery } from 'gatsby';
@@ -40,12 +41,13 @@ const IndexPage = () => {
                 "
                 placeholder="Enter your email"
               />
-              <button className='
+              { /* @ts-ignore */}
+              <Link to='/pong' className='
                 px-8 py-3 whitespace-nowrap bg-purple rounded
-                text-lg sm:text-md
-              '>
+                text-lg sm:text-md'
+              >
                 Sign up
-              </button>
+              </Link>
             </div>
           </div>
         </div>
