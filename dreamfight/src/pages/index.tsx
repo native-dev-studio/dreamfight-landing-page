@@ -42,7 +42,7 @@ const IndexPage = () => {
                 placeholder="Enter your email"
               />
               { /* @ts-ignore */}
-              <Link to='/pong' className='
+              <Link to='#' className='
                 px-8 py-3 whitespace-nowrap bg-purple rounded
                 text-lg sm:text-md'
               >
