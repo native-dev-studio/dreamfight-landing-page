@@ -17,13 +17,24 @@ const PongPage = () => {
   React.useEffect(() => {
     /// Load video stream by transmuxing to mp4 fragments
     const videoTag = videoRef.current as HTMLVideoElement;
-    const src = 'https://547f72e6652371c3.mediapackage.us-east-1.amazonaws.com/out/v1/28c261ccdfc94e1ca1925a4401ea4e48/index.m3u8';
+    /* const src = 'https://547f72e6652371c3.mediapackage.us-east-1.amazonaws.com/out/v1/28c261ccdfc94e1ca1925a4401ea4e48/index.m3u8'; */
     /* if (Hls.isSupported()) { */
     /*   hls.loadSource(src); */
     /*   hls.attachMedia(videoTag); */
     /* } else if (videoTag.canPlayType('application/vnd.apple.mpegurl')) { */
     /*   videoTag.src = src; */
     /* } */
+    const url = 'wss://3ds4aci6dc.execute-api.us-east-1.amazonaws.com/test'
+    const ws =  new WebSocket(url)
+    ws.onopen = () => {
+      console.log('[WebSocket.onopen]');
+    }
+    ws.onmessage = (evt) => {
+      console.log('[WebSocket.onmessage]', evt);
+    }
+    ws.onerror = (err) => {
+      console.log('[WebSocket.onerror]', err);
+    }
 
     /// Play video stream from PixiJs
     const node = document.getElementById('broadcast');
