@@ -4,7 +4,6 @@ import { Link } from 'gatsby';
 import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import * as Pixi from "pixi.js";
-import Hls from 'hls.js';
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
