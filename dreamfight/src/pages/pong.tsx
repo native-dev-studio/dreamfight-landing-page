@@ -3,11 +3,12 @@ import * as React from "react"
 import { Link } from 'gatsby';
 import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
+import Hls from 'hls.js';
 import * as Pixi from "pixi.js";
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
-  /* const hls = new Hls(); */
+  const hls = new Hls();
   // TODO: Size me properly
   const app = new Pixi.Application({
     width: 1280,
@@ -17,13 +18,13 @@ const PongPage = () => {
   React.useEffect(() => {
     /// Load video stream by transmuxing to mp4 fragments
     const videoTag = videoRef.current as HTMLVideoElement;
-    /* const src = 'https://547f72e6652371c3.mediapackage.us-east-1.amazonaws.com/out/v1/28c261ccdfc94e1ca1925a4401ea4e48/index.m3u8'; */
-    /* if (Hls.isSupported()) { */
-    /*   hls.loadSource(src); */
-    /*   hls.attachMedia(videoTag); */
-    /* } else if (videoTag.canPlayType('application/vnd.apple.mpegurl')) { */
-    /*   videoTag.src = src; */
-    /* } */
+    const src = 'https://63050ee307b58b8f.mediapackage.us-east-1.amazonaws.com/out/v1/337bba2ce017459383a6a1781491c443/index.m3u8';
+    if (Hls.isSupported()) {
+      hls.loadSource(src);
+      hls.attachMedia(videoTag);
+    } else if (videoTag.canPlayType('application/vnd.apple.mpegurl')) {
+      videoTag.src = src;
+    }
     const url = 'wss://3ds4aci6dc.execute-api.us-east-1.amazonaws.com/test'
     const ws =  new WebSocket(url)
     ws.onopen = () => {
