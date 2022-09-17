@@ -11,51 +11,65 @@ import '@tensorflow/tfjs';
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const hls = new Hls();
+  // TODO: Size me properly
+  const app = new Pixi.Application({
+    width: 1280,
+    height: 720,
+  });
 
   React.useEffect(() => {
-    /// Load video stream by transmuxing to mp4 fragments
     const videoTag = videoRef.current as HTMLVideoElement;
 
-   // TODO: Size me properly
-   const app = new Pixi.Application({
-     width: 1280,
-     height: 720,
-   });
+    cocoSSD.load().then(model => {
+      console.log('[cocoSSD.load]');
 
-   cocoSSD.load().then(model => {
-     console.log('[cocoSSD.load]');
+      /// Video stream
+      const src = 'https://63050ee307b58b8f.mediapackage.us-east-1.amazonaws.com/out/v1/337bba2ce017459383a6a1781491c443/index.m3u8';
+      if (Hls.isSupported()) {
+        hls.loadSource(src);
+        hls.attachMedia(videoTag);
+      } else if (videoTag.canPlayType('application/vnd.apple.mpegurl')) {
+        videoTag.src = src;
+      }
 
-     /// Video stream
-     const src = 'https://63050ee307b58b8f.mediapackage.us-east-1.amazonaws.com/out/v1/337bba2ce017459383a6a1781491c443/index.m3u8';
-     if (Hls.isSupported()) {
-       hls.loadSource(src);
-       hls.attachMedia(videoTag);
-     } else if (videoTag.canPlayType('application/vnd.apple.mpegurl')) {
-       videoTag.src = src;
-     }
+      /// Process video onto canvas
+      const node = document.getElementById('broadcast');
+      node?.appendChild(app.view);
+      const videoTexture = Pixi.Texture.from(videoTag);
+      const videoSprite = Pixi.Sprite.from(videoTexture);
+      app.stage.addChild(videoSprite);
 
-     /// Process video onto canvas
-     const node = document.getElementById('broadcast');
-     node?.appendChild(app.view);
-     const videoTexture = Pixi.Texture.from(videoTag);
-     const videoSprite = Pixi.Sprite.from(videoTexture);
-     app.stage.addChild(videoSprite);
+      // TODO: Create rect off-screen or hidden
+      const rect: Pixi.Graphics = new Pixi.Graphics()
+      .beginFill(0xDC2626)
+      .drawRect(10, 10, 10, 10)
+      .endFill();
+      app.stage.addChild(rect);
 
-     /// Augmentation stream, turn it into object tracking loop
-     /// TODO: Replace with custom render loop to keep predictions and video in sync
-     app.ticker.add(delta => {
-       // Remove previous image
-       model.detect(videoTag).then((preds: any) => {
-         // Set new image
-         console.log(preds);
-       })
-     });
-   });
+      /// Augmentation stream, turn it into object tracking loop
+      /// TODO: Replace with custom render loop to keep predictions and video in sync
+      app.ticker.add(delta => {
+        model.detect(videoTag).then((preds: any) => {
+          if (preds.length === 0) {
+            return;
+          }
+
+
+          const { bbox, klass, score } = preds[0];
+          const [ x, y, w, h ] = bbox;
+
+          rect.position.x = x;
+          rect.position.y = y;
+
+          app.renderer.render(app.stage);
+        })
+      });
+    });
   }, []);
 
   return (
     <div id='broadcast'>
-      <video ref={videoRef} autoPlay controls muted style={{ display: 'none' }}/>
+      <video ref={videoRef} autoPlay controls muted />
     </div>
   );
 }
