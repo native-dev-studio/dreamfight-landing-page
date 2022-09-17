@@ -5,6 +5,8 @@ import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage, getImage } from 'gatsby-plugin-image';
 import Hls from 'hls.js';
 import * as Pixi from "pixi.js";
+import * as cocoSSD from '@tensorflow-models/coco-ssd';
+import '@tensorflow/tfjs';
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -13,31 +15,31 @@ const PongPage = () => {
   const videoTag = videoRef.current as HTMLVideoElement;
 
   /// Stubbed model so we can play camera
-  const model = true;
-
-  const predictWebcam = (event) => {
+  let model: any = false;
+  const predictWebcam = () => {
     console.log('[predictWebcam]');
+    model.detect(videoRef.current).then((preds: any) => {
+      console.log('[predictWebcam.predict]: ', preds);
+    })
+    window.requestAnimationFrame(predictWebcam);
   }
 
-  const enableWebcam = (event) => {
-    console.log('[enableWebcam]');
-    // Only continue if the COCO-SSD has finished loading.
-    if (!model) {
-      console.log('[enableWebcam]: model not defined');
-      return;
-    }
+  const enableWebcam = (event: Event) => {
+    cocoSSD.load().then(loadedModel => {
+      console.log('[enableWebcam.cocoSSD]', loadedModel)
+      model = loadedModel;
+      // getUsermedia parameters to force video but not audio.
+      const constraints = {
+        video: true
+      };
 
-    // getUsermedia parameters to force video but not audio.
-    const constraints = {
-      video: true
-    };
-
-    // Activate the webcam stream.
-    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-      videoRef.current.srcObject = stream;
-      /* videoTag.src = URL.createObjectURL(stream); */
-      videoRef.current.addEventListener('loadeddata', predictWebcam);
-    });
+      // Activate the webcam stream.
+      navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+        videoRef.current.srcObject = stream;
+        /* videoTag.src = URL.createObjectURL(stream); */
+        videoRef.current.addEventListener('loadeddata', predictWebcam);
+      });
+    }, (err) => console.error(err));
   }
 
   React.useEffect(() => {
