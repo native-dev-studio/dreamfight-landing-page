@@ -32,11 +32,21 @@ const PongPage = () => {
         videoTag.src = src;
       }
 
+      hls.on(Hls.Events.FRAG_CHANGED, (evt, data) => {
+        const sn = data.frag.sn;
+        const secondsPerChunk = 6;
+        const videoLengthInMinutes = 10;
+        const secondsInMinutes = 60;
+        const totalChunks = videoLengthInMinutes * secondsInMinutes / secondsPerChunk;
+        const chunkId = sn as number % totalChunks;
+        console.log('[Hls.FRAG_CHANGED]', chunkId);
+      });
+
       /// Process video onto canvas
       const node = document.getElementById('broadcast');
       node?.appendChild(app.view);
       const videoTexture = Pixi.Texture.from(videoTag);
-      const videoSprite = Pixi.Sprite.from(videoTexture);
+      const videoSprite = Pixi.Sprite.from(videoTexture)
       app.stage.addChild(videoSprite);
 
       // TODO: Create rect off-screen or hidden
@@ -49,11 +59,10 @@ const PongPage = () => {
       /// Augmentation stream, turn it into object tracking loop
       /// TODO: Replace with custom render loop to keep predictions and video in sync
       app.ticker.add(delta => {
-        model.detect(videoTag).then((preds: any) => {
+        model.detect(videoTag).then(preds => {
           if (preds.length === 0) {
             return;
           }
-
 
           const { bbox, klass, score } = preds[0];
           const [ x, y, w, h ] = bbox;
@@ -69,7 +78,7 @@ const PongPage = () => {
 
   return (
     <div id='broadcast'>
-      <video ref={videoRef} autoPlay controls muted />
+      <video ref={videoRef} autoPlay controls muted style={{ display: 'none' }} />
     </div>
   );
 }
