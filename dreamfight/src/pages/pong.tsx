@@ -14,7 +14,11 @@ const emit = (coords: any) => {
     return;
   }
   setTimeout(() => {
-    console.log(coords.shift());
+    const coord = coords.shift();
+    const event = {
+      TennisBall: coord
+    };
+    console.log(event);
     emit(coords);
   }, 66.6666666667);
 }
