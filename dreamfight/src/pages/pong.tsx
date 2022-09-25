@@ -7,6 +7,17 @@ import Hls from 'hls.js';
 import * as Pixi from "pixi.js";
 import * as cocoSSD from '@tensorflow-models/coco-ssd';
 import '@tensorflow/tfjs';
+import chunks from '../data/data.json';
+
+const emit = (coords: any) => {
+  if (coords.length === 0) {
+    return;
+  }
+  setTimeout(() => {
+    console.log(coords.shift());
+    emit(coords);
+  }, 66.6666666667);
+}
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -39,7 +50,10 @@ const PongPage = () => {
         const secondsInMinutes = 60;
         const totalChunks = videoLengthInMinutes * secondsInMinutes / secondsPerChunk;
         const chunkId = sn as number % totalChunks;
+        const tennisBallCoordinates = chunks[chunkId];
+
         console.log('[Hls.FRAG_CHANGED]', chunkId);
+        emit(tennisBallCoordinates);
       });
 
       /// Process video onto canvas
