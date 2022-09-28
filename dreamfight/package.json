@@ -30,6 +30,7 @@
     "pixi.js": "^6.4.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "rx-ease": "^2.0.0",
     "rxjs": "^7.5.6"
   },
   "devDependencies": {
