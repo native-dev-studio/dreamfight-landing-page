@@ -13,7 +13,7 @@ import playIcon from "../images/play.svg";
 const VIDEO = {
   width: 1280,
   height: 720,
-  fps: 60,
+  fps: 15,
 };
 
 const PADDLE_HEIGHT = 100;
