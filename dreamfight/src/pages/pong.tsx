@@ -156,7 +156,12 @@ const PongPage = () => {
           return Observable.from(chunks[chunkId]).pipe(
             Observable.concatMap((chunk) => {
               return chunk
-                ? Observable.of({ x: chunk[0], y: chunk[1] }).pipe(
+                ? Observable.of({ 
+                  chunkId: chunkId,
+                  frame: chunkId * secondsPerChunk * VIDEO.fps,
+                  x: chunk[0],
+                  y: chunk[1]
+                }).pipe(
                     Observable.delay(1000 / 15)
                   )
                 : Observable.EMPTY;
@@ -170,14 +175,18 @@ const PongPage = () => {
       )
       .subscribe((positions) => {
         if (positions) {
-          console.log("positions", [
-            positions.x * VIDEO.width,
-            positions.y * VIDEO.height,
-          ]);
+
+          console.log({
+            chunkId: positions.chunkId,
+            frame: positions.frame,
+            x: positions.x,
+            y: positions.y,
+          });
 
           tennis.position.x = positions.x * VIDEO.width;
           tennis.position.y = positions.y * VIDEO.height;
         }
+
       });
 
     // const mlEvents$ = new Stream.Subject();
