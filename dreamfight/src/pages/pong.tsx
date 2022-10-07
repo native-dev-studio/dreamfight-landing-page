@@ -149,8 +149,9 @@ const PongPage = () => {
       paddleLeft.position.y = y;
     });
 
+    const TICKER_INTERVAL = 1000 / 15; // FPS
 
-    fragChanged$
+    const tennisBall$ = fragChanged$
     .pipe(
       Observable.first(),
       Observable.map(frag => {
@@ -163,7 +164,7 @@ const PongPage = () => {
         return sliced;
       }),
       Observable.mergeMap(seq => Observable.from(seq)),
-      Observable.concatMap(maybePosition => Observable.of(maybePosition).pipe(Observable.delay(1_000 / 15)))
+      Observable.concatMap(maybePosition => Observable.of(maybePosition).pipe(Observable.delay(TICKER_INTERVAL)))
     )
     .subscribe(maybePosition => {
       if (maybePosition) {
@@ -191,7 +192,6 @@ const PongPage = () => {
     //   next: (s) => console.log("videoPauseState$", s),
     // });
 
-    const TICKER_INTERVAL = 1000 / 15; // FPS
 
     // Start a loop
     Observable.interval(TICKER_INTERVAL).pipe(
