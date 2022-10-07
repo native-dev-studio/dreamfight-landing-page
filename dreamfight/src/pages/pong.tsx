@@ -18,18 +18,6 @@ const VIDEO = {
 
 const PADDLE_HEIGHT = 100;
 
-/*
-  EVENTS
-    - Tennis ball
-      - x, y, w, h
-        - 7 digit precision for fractions (0.8104252)
-
-    - Service Shot (no params; represents hit shot in the game)
-      - (flash red circle)
-      - Auto returns a shot
-      - status (open|settled)
-        ask
-*/
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
