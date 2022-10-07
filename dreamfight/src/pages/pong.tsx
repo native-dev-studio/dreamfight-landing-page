@@ -61,21 +61,17 @@ const PongPage = () => {
 
       queue.push(imdata);
 
-      if (timer > 10_000) {
-        const found = queue.shift();
-        if (found) {
-          ctx!.putImageData(found, 0, 0);
-          canvasTexture.baseTexture.update();
-        }
+      const found = queue.shift();
+      if (found) {
+        ctx!.putImageData(found, 0, 0);
+        canvasTexture.baseTexture.update();
       }
 
       // @ts-ignore
-      /* videoTag.requestVideoFrameCallback(throttleQueue); */
-      requestAnimationFrame(throttleQueue);
+      videoTag.requestVideoFrameCallback(throttleQueue);
     } 
     // @ts-ignore
-    /* videoTag.requestVideoFrameCallback(throttleQueue); */
-    requestAnimationFrame(throttleQueue);
+    videoTag.requestVideoFrameCallback(throttleQueue);
 
 
     // Video stream
