@@ -36,11 +36,7 @@ const PongPage = () => {
 
   React.useEffect(() => {
     const hls = new Hls();
-    // TODO: Size me properly
-    const app = new Pixi.Application({
-      width: 1280,
-      height: 720,
-    });
+    const app = new Pixi.Application(VIDEO);
     /// Load video stream by transmuxing to mp4 fragments
     const videoTag = videoRef.current as HTMLVideoElement;
 
