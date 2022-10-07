@@ -4,7 +4,7 @@ import Hls, { FragChangedData } from "hls.js";
 import * as Pixi from "pixi.js";
 import * as cocoSSD from "@tensorflow-models/coco-ssd";
 import "@tensorflow/tfjs";
-import chunks from "../data/data.json";
+import videoChunks from "../data/data.json";
 import * as Observable from "rxjs";
 import ease, { presets } from "rx-ease";
 import playIcon from "../images/play.svg";
@@ -25,7 +25,7 @@ const PongPage = () => {
     const hls = new Hls();
     const app = new Pixi.Application(VIDEO);
 
-    const videoFeed = (url: string, hls: Hls) => {
+    const videoFeed$ = (url: string, hls: Hls) => {
       return new Observable.Observable((sub: Observable.Subscriber<ImageData>) => {
         const video = document.createElement('video');
         video.muted = true;
@@ -75,10 +75,6 @@ const PongPage = () => {
     const sprite = Pixi.Sprite.from(texture);
 
     const src = "https://63050ee307b58b8f.mediapackage.us-east-1.amazonaws.com/out/v1/337bba2ce017459383a6a1781491c443/index.m3u8";
-    videoFeed(src, hls).subscribe((imdata: ImageData) => {
-      ctx!.putImageData(imdata, 0, 0);
-      texture.baseTexture.update();
-    });
 
     const node = document.getElementById("broadcast");
     node?.appendChild(app.view);
@@ -153,52 +149,33 @@ const PongPage = () => {
       paddleLeft.position.y = y;
     });
 
+
     fragChanged$
-      .pipe(
-        Observable.mergeMap((frag) => {
-          /* console.log("fragChanged", frag); */
-          const sn = frag.frag.sn;
-          const secondsPerChunk = 6;
-          const videoLengthInMinutes = 10;
-          const secondsInMinutes = 60;
-          const totalChunks =
-            (videoLengthInMinutes * secondsInMinutes) / secondsPerChunk;
-          const chunkId = (sn as number) % totalChunks;
+    .pipe(
+      Observable.first(),
+      Observable.map(frag => {
+        const sn = frag.frag.sn;
+        const secondsPerChunk      = 6;
+        const videoLengthInMinutes = 10;
+        const secondsInMinutes     = 60;
+        const chunkId = (sn as number) % ((videoLengthInMinutes * secondsInMinutes) / secondsPerChunk);
+        const sliced = videoChunks.slice(chunkId - 1).flat();
+        return sliced;
+      }),
+      Observable.mergeMap(seq => Observable.from(seq)),
+      Observable.concatMap(maybePosition => Observable.of(maybePosition).pipe(Observable.delay(1_000 / 15)))
+    )
+    .subscribe(maybePosition => {
+      if (maybePosition) {
+        tennis.position.x = maybePosition[0] * VIDEO.width;
+        tennis.position.y = maybePosition[1] * VIDEO.height;
+      }
+    });
 
-          return Observable.from(chunks[chunkId]).pipe(
-            Observable.concatMap((chunk) => {
-              return chunk
-                ? Observable.of({ 
-                  chunkId: chunkId,
-                  frame: chunkId * secondsPerChunk * VIDEO.fps,
-                  x: chunk[0],
-                  y: chunk[1]
-                }).pipe(
-                    Observable.delay(1000 / 15)
-                  )
-                : Observable.EMPTY;
-            }),
-            ease({
-              x: [120, 18],
-              y: [120, 18],
-            })
-          );
-        })
-      )
-      .subscribe((positions) => {
-        if (positions) {
-
-          /* console.log({ */
-          /*   chunkId: positions.chunkId, */
-          /*   frame: positions.frame, */
-          /*   x: positions.x, */
-          /*   y: positions.y, */
-          /* }); */
-
-          tennis.position.x = positions.x * VIDEO.width;
-          tennis.position.y = positions.y * VIDEO.height;
-        }
-
+    videoFeed$(src, hls)
+      .subscribe((imdata: ImageData) => {
+        ctx!.putImageData(imdata, 0, 0);
+        texture.baseTexture.update();
       });
 
     // const mlEvents$ = new Stream.Subject();
