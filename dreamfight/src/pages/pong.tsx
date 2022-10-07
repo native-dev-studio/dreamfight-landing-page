@@ -20,13 +20,40 @@ const PADDLE_HEIGHT = 100;
 
 
 const PongPage = () => {
-  const videoRef = React.useRef<HTMLVideoElement>(null);
 
   React.useEffect(() => {
     const hls = new Hls();
     const app = new Pixi.Application(VIDEO);
-    /// Load video stream by transmuxing to mp4 fragments
-    const videoTag = videoRef.current as HTMLVideoElement;
+
+    const videoFeed = (url: string, hls: Hls) => {
+      return new Observable.Observable((sub: Observable.Subscriber<ImageData>) => {
+        const video = document.createElement('video');
+        video.muted = true;
+
+        if (Hls.isSupported()) {
+          hls.loadSource(url);
+          hls.attachMedia(video);
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = url;
+        }
+
+        /// Ensures that the video is animating; not sure why we need this
+        Pixi.Texture.from(video);
+
+        const canvas = new OffscreenCanvas(VIDEO.width, VIDEO.height);
+        const ctx  = canvas.getContext('2d');
+
+        const handler = (timer: number) => {
+          ctx!.drawImage(video, 0, 0);
+          const imdata = ctx!.getImageData(0, 0, canvas.width, canvas.height);
+          sub.next(imdata);
+          // @ts-ignore
+          video.requestVideoFrameCallback(handler);
+        } 
+        // @ts-ignore
+        video.requestVideoFrameCallback(handler);
+      });
+    }
 
     const mlModel$ = Observable.from(cocoSSD.load());
     const fragChanged$ = Observable.fromEventPattern<FragChangedData>(
@@ -40,49 +67,18 @@ const PongPage = () => {
       }
     );
 
-    /* We use an offscreen canvas to manage video seeking */
-    const offscreen = new OffscreenCanvas(VIDEO.width, VIDEO.height);
-    const tmp = offscreen.getContext('2d');
-
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width  = VIDEO.width;
+    canvas.width = VIDEO.width;
     canvas.height = VIDEO.height;
+    const texture = Pixi.Texture.from(canvas);
+    const sprite = Pixi.Sprite.from(texture);
 
-    const canvasTexture = Pixi.Texture.from(canvas);
-    const canvasSprite  = Pixi.Sprite.from(canvasTexture);
-
-    const queue: Array<ImageData> = [];
-
-    const throttleQueue = (timer: number) => {
-      /* Extract image data per-frame */
-      tmp!.drawImage(videoTag, 0, 0);
-      const imdata = tmp!.getImageData(0, 0, offscreen.width, offscreen.height);
-
-      queue.push(imdata);
-
-      const found = queue.shift();
-      if (found) {
-        ctx!.putImageData(found, 0, 0);
-        canvasTexture.baseTexture.update();
-      }
-
-      // @ts-ignore
-      videoTag.requestVideoFrameCallback(throttleQueue);
-    } 
-    // @ts-ignore
-    videoTag.requestVideoFrameCallback(throttleQueue);
-
-
-    // Video stream
-    const src =
-      "https://63050ee307b58b8f.mediapackage.us-east-1.amazonaws.com/out/v1/337bba2ce017459383a6a1781491c443/index.m3u8";
-    if (Hls.isSupported()) {
-      hls.loadSource(src);
-      hls.attachMedia(videoTag);
-    } else if (videoTag.canPlayType("application/vnd.apple.mpegurl")) {
-      videoTag.src = src;
-    }
+    const src = "https://63050ee307b58b8f.mediapackage.us-east-1.amazonaws.com/out/v1/337bba2ce017459383a6a1781491c443/index.m3u8";
+    videoFeed(src, hls).subscribe((imdata: ImageData) => {
+      ctx!.putImageData(imdata, 0, 0);
+      texture.baseTexture.update();
+    });
 
     const node = document.getElementById("broadcast");
     node?.appendChild(app.view);
@@ -102,8 +98,7 @@ const PongPage = () => {
       .drawRect(VIDEO.width - 50, 0, 50, 200)
       .endFill();
 
-    app.stage.addChild(canvasSprite);
-    Pixi.Texture.from(videoTag);
+    app.stage.addChild(sprite);
 
     app.stage.addChild(tennis);
     app.stage.addChild(paddleLeft);
@@ -208,8 +203,8 @@ const PongPage = () => {
 
     // const mlEvents$ = new Stream.Subject();
 
-    const videoPlayState$ = Observable.fromEvent(videoTag, "play");
-    const videoPauseState$ = Observable.fromEvent(videoTag, "pause");
+    /* const videoPlayState$ = Observable.fromEvent(videoTag, "play"); */
+    /* const videoPauseState$ = Observable.fromEvent(videoTag, "pause"); */
 
     // videoPlayState$.subscribe({
     //   next: (s) => console.log("videoPlayState$", s),
@@ -227,7 +222,7 @@ const PongPage = () => {
       Observable.withLatestFrom(mlModel$, fragChanged$),
 
       // Accept events when the video is playing, and filter them out when it's paused
-      Observable.windowToggle(videoPlayState$, () => videoPauseState$),
+      /* Observable.windowToggle(videoPlayState$, () => videoPauseState$), */
       Observable.mergeAll(),
 
       // And only allow up to the FPS interval events/sec (e.g. 16.67ms for 60fps)
@@ -268,52 +263,7 @@ const PongPage = () => {
   }, []);
 
   return (
-    <div
-      id="broadcast"
-      style={{
-        height: "100vh",
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <button
-        style={{
-          position: "absolute",
-          background: "#FFF",
-          borderRadius: 80,
-          width: 80,
-          height: 80,
-          top: "50%",
-          marginTop: -40,
-          left: "50%",
-          marginLeft: -40,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        onClick={() => {
-          if (videoRef.current?.paused) {
-            videoRef.current?.play();
-          } else {
-            videoRef.current?.pause();
-          }
-        }}
-      >
-        <img src={playIcon} alt="" />
-      </button>
-
-      <video
-        ref={videoRef}
-        autoPlay
-        controls
-        muted
-        style={{
-          display: "none",
-        }}
-      />
-    </div>
+    <div id="broadcast" />
   );
 };
 
