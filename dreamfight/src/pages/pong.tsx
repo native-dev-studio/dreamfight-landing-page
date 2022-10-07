@@ -56,6 +56,44 @@ const PongPage = () => {
       }
     );
 
+    /* We use an offscreen canvas to manage video seeking */
+    const offscreen = new OffscreenCanvas(VIDEO.width, VIDEO.height);
+    const tmp = offscreen.getContext('2d');
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width  = VIDEO.width;
+    canvas.height = VIDEO.height;
+
+    const canvasTexture = Pixi.Texture.from(canvas);
+    const canvasSprite  = Pixi.Sprite.from(canvasTexture);
+
+    const queue: Array<ImageData> = [];
+
+    const throttleQueue = (timer: number) => {
+      /* Extract image data per-frame */
+      tmp!.drawImage(videoTag, 0, 0);
+      const imdata = tmp!.getImageData(0, 0, offscreen.width, offscreen.height);
+
+      queue.push(imdata);
+
+      if (timer > 10_000) {
+        const found = queue.shift();
+        if (found) {
+          ctx!.putImageData(found, 0, 0);
+          canvasTexture.baseTexture.update();
+        }
+      }
+
+      // @ts-ignore
+      /* videoTag.requestVideoFrameCallback(throttleQueue); */
+      requestAnimationFrame(throttleQueue);
+    } 
+    // @ts-ignore
+    /* videoTag.requestVideoFrameCallback(throttleQueue); */
+    requestAnimationFrame(throttleQueue);
+
+
     // Video stream
     const src =
       "https://63050ee307b58b8f.mediapackage.us-east-1.amazonaws.com/out/v1/337bba2ce017459383a6a1781491c443/index.m3u8";
@@ -68,10 +106,6 @@ const PongPage = () => {
 
     const node = document.getElementById("broadcast");
     node?.appendChild(app.view);
-
-    const videoTexture = Pixi.Texture.from(videoTag);
-    const videoSprite = Pixi.Sprite.from(videoTexture);
-    app.stage.addChild(videoSprite);
 
     const tennis = new Pixi.Graphics()
       .beginFill(0xff0000)
@@ -87,6 +121,9 @@ const PongPage = () => {
       .beginFill(0xffffff)
       .drawRect(VIDEO.width - 50, 0, 50, 200)
       .endFill();
+
+    app.stage.addChild(canvasSprite);
+    Pixi.Texture.from(videoTag);
 
     app.stage.addChild(tennis);
     app.stage.addChild(paddleLeft);
@@ -115,7 +152,7 @@ const PongPage = () => {
       "pointermove"
     ).pipe(
       Observable.map((e) => {
-        console.log("!", e.clientY / VIDEO.height);
+        /* console.log("!", e.clientY / VIDEO.height); */
         return clamp((e.clientY - PADDLE_HEIGHT) / VIDEO.height, 0, 1);
       })
     );
@@ -137,14 +174,14 @@ const PongPage = () => {
     Observable.merge(arrows$, mouse$).subscribe((v) => {
       const y = (VIDEO.height - paddleLeft.height) * v; /* / 100 */
 
-      console.log("up", v, y);
+      /* console.log("up", v, y); */
       paddleLeft.position.y = y;
     });
 
     fragChanged$
       .pipe(
         Observable.mergeMap((frag) => {
-          console.log("fragChanged", frag);
+          /* console.log("fragChanged", frag); */
           const sn = frag.frag.sn;
           const secondsPerChunk = 6;
           const videoLengthInMinutes = 10;
@@ -176,12 +213,12 @@ const PongPage = () => {
       .subscribe((positions) => {
         if (positions) {
 
-          console.log({
-            chunkId: positions.chunkId,
-            frame: positions.frame,
-            x: positions.x,
-            y: positions.y,
-          });
+          /* console.log({ */
+          /*   chunkId: positions.chunkId, */
+          /*   frame: positions.frame, */
+          /*   x: positions.x, */
+          /*   y: positions.y, */
+          /* }); */
 
           tennis.position.x = positions.x * VIDEO.width;
           tennis.position.y = positions.y * VIDEO.height;
