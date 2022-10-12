@@ -28,7 +28,7 @@ const PongPage = () => {
     const videoFeed$ = (url: string, hls: Hls) => {
       return new Observable.Observable((sub: Observable.Subscriber<ImageData>) => {
         const video = document.createElement('video');
-        video.muted = true;
+        /* video.muted = true; */
 
         if (Hls.isSupported()) {
           hls.loadSource(url);
