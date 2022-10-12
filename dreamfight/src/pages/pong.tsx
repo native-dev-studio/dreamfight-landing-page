@@ -28,7 +28,6 @@ const PongPage = () => {
     const videoFeed$ = (url: string, hls: Hls) => {
       return new Observable.Observable((sub: Observable.Subscriber<ImageData>) => {
         const video = document.createElement('video');
-        /* video.muted = true; */
 
         if (Hls.isSupported()) {
           hls.loadSource(url);
@@ -74,7 +73,7 @@ const PongPage = () => {
     const texture = Pixi.Texture.from(canvas);
     const sprite = Pixi.Sprite.from(texture);
 
-    const src = "https://63050ee307b58b8f.mediapackage.us-east-1.amazonaws.com/out/v1/337bba2ce017459383a6a1781491c443/index.m3u8";
+    const src = "https://547f72e6652371c3.mediapackage.us-east-1.amazonaws.com/out/v1/28c261ccdfc94e1ca1925a4401ea4e48/index.m3u8";
 
     const node = document.getElementById("broadcast");
     node?.appendChild(app.view);
