@@ -156,20 +156,23 @@ const PongPage = () => {
       Observable.first(),
       Observable.map(frag => {
         const sn = frag.frag.sn;
+        console.log(`sn=(${sn})`);
         const secondsPerChunk      = 6;
         const videoLengthInMinutes = 10;
         const secondsInMinutes     = 60;
         const chunkId = (sn as number) % ((videoLengthInMinutes * secondsInMinutes) / secondsPerChunk);
-        const sliced = videoChunks.slice(chunkId - 1).flat();
+        console.log(chunkId);
+        const sliced = videoChunks.slice(chunkId).flat();
         return sliced;
       }),
       Observable.mergeMap(seq => Observable.from(seq)),
       Observable.concatMap(maybePosition => Observable.of(maybePosition).pipe(Observable.delay(TICKER_INTERVAL)))
     )
-    .subscribe(maybePosition => {
-      if (maybePosition) {
-        tennis.position.x = maybePosition[0] * VIDEO.width;
-        tennis.position.y = maybePosition[1] * VIDEO.height;
+    .subscribe(({ file, dir, coords}) => {
+      console.log(dir, file, coords);
+      if (coords) {
+        tennis.position.x = coords[0] * VIDEO.width;
+        tennis.position.y = coords[1] * VIDEO.height;
       }
     });
 
