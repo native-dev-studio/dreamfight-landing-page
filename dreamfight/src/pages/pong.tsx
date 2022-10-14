@@ -1,12 +1,11 @@
 import * as React from "react";
 
-import Hls, { FragChangedData } from "hls.js";
 import * as Pixi from "pixi.js";
 import * as cocoSSD from "@tensorflow-models/coco-ssd";
 import "@tensorflow/tfjs";
-import videoChunks from "../data/data.json";
 import * as Observable from "rxjs";
-import ease, { presets } from "rx-ease";
+import ease from 'rx-ease';
+import videoFeed$ from '../streams/videoFeed';
 import playIcon from "../images/play.svg";
 
 // Stub video object (to be replaced with some introspected data)
@@ -22,50 +21,9 @@ const PADDLE_HEIGHT = 100;
 const PongPage = () => {
 
   React.useEffect(() => {
-    const hls = new Hls();
     const app = new Pixi.Application(VIDEO);
 
-    const videoFeed$ = (url: string, hls: Hls) => {
-      return new Observable.Observable((sub: Observable.Subscriber<ImageData>) => {
-        const video = document.createElement('video');
-        video.muted = true
-
-        if (Hls.isSupported()) {
-          hls.loadSource(url);
-          hls.attachMedia(video);
-        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-          video.src = url;
-        }
-
-        /// Ensures that the video is animating; not sure why we need this
-        Pixi.Texture.from(video);
-
-        const canvas = new OffscreenCanvas(VIDEO.width, VIDEO.height);
-        const ctx  = canvas.getContext('2d');
-
-        const handler = (timer: number) => {
-          ctx!.drawImage(video, 0, 0);
-          const imdata = ctx!.getImageData(0, 0, canvas.width, canvas.height);
-          sub.next(imdata);
-          // @ts-ignore
-          video.requestVideoFrameCallback(handler);
-        } 
-        // @ts-ignore
-        video.requestVideoFrameCallback(handler);
-      });
-    }
-
     const mlModel$ = Observable.from(cocoSSD.load());
-    const fragChanged$ = Observable.fromEventPattern<FragChangedData>(
-      (handler) => {
-        hls.on(Hls.Events.FRAG_CHANGED, (evt, data) => {
-          handler(data);
-        });
-      },
-      (handler) => {
-        hls.off(Hls.Events.FRAG_CHANGED, handler);
-      }
-    );
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -151,33 +109,9 @@ const PongPage = () => {
 
     const TICKER_INTERVAL = 1000 / 15; // FPS
 
-    const tennisBall$ = fragChanged$
-    .pipe(
-      Observable.first(),
-      Observable.map(frag => {
-        const sn = frag.frag.sn;
-        console.log(`sn=(${sn})`);
-        const secondsPerChunk      = 6;
-        const videoLengthInMinutes = 10;
-        const secondsInMinutes     = 60;
-        const chunkId = (sn as number) % ((videoLengthInMinutes * secondsInMinutes) / secondsPerChunk);
-        console.log(chunkId);
-        const sliced = videoChunks.slice(chunkId).flat();
-        return sliced;
-      }),
-      Observable.mergeMap(seq => Observable.from(seq)),
-      Observable.concatMap(maybePosition => Observable.of(maybePosition).pipe(Observable.delay(TICKER_INTERVAL)))
-    )
-    .subscribe(({ file, dir, coords}) => {
-      console.log(dir, file, coords);
-      if (coords) {
-        tennis.position.x = coords[0] * VIDEO.width;
-        tennis.position.y = coords[1] * VIDEO.height;
-      }
-    });
-
-    videoFeed$(src, hls)
-      .subscribe((imdata: ImageData) => {
+    videoFeed$(src)
+      .subscribe(({ imdata, coords }) => {
+        console.log(coords);
         ctx!.putImageData(imdata, 0, 0);
         texture.baseTexture.update();
       });
@@ -197,18 +131,18 @@ const PongPage = () => {
 
 
     // Start a loop
-    Observable.interval(TICKER_INTERVAL).pipe(
-      // Aggregate the ML model and fragment changes and wait until they've all loaded
-      Observable.withLatestFrom(mlModel$, fragChanged$),
+    /* Observable.interval(TICKER_INTERVAL).pipe( */
+    /*   // Aggregate the ML model and fragment changes and wait until they've all loaded */
+    /*   /1* Observable.withLatestFrom(mlModel$, fragChanged$), *1/ */
 
-      // Accept events when the video is playing, and filter them out when it's paused
-      /* Observable.windowToggle(videoPlayState$, () => videoPauseState$), */
-      Observable.mergeAll(),
+    /*   // Accept events when the video is playing, and filter them out when it's paused */
+    /*   /1* Observable.windowToggle(videoPlayState$, () => videoPauseState$), *1/ */
+    /*   Observable.mergeAll(), */
 
-      // And only allow up to the FPS interval events/sec (e.g. 16.67ms for 60fps)
-      Observable.sampleTime(TICKER_INTERVAL),
-      Observable.observeOn(Observable.animationFrameScheduler)
-    );
+    /*   // And only allow up to the FPS interval events/sec (e.g. 16.67ms for 60fps) */
+    /*   Observable.sampleTime(TICKER_INTERVAL), */
+    /*   Observable.observeOn(Observable.animationFrameScheduler) */
+    /* ); */
     // .subscribe(function update([_t, coco, frag /* playerEvents */]) {
     //   console.log("update here!!!", { _t, coco, frag /* playerEvents */ });
 
