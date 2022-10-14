@@ -43,15 +43,26 @@ const videoFeed$ = (url: string) => {
       console.log(`(sn=(${sn}), chunkId=(${chunkId}))`);
 
       const canvas = new OffscreenCanvas(VIDEO.width, VIDEO.height);
-      const ctx  = canvas.getContext('2d');
+      const ctx  = canvas.getContext('2d', { 
+        /// Indicates whether or not read-back operations are planned; forcing use of
+        /// software vs hardware acceleration which saves memory when calling 
+        /// getImageData frequently.
+        //
+        /// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
+        willReadFrequently: true 
+      }) as OffscreenCanvasRenderingContext2D;
 
       const handler = (timer: number) => {
         ctx!.drawImage(video, 0, 0);
         const imdata = ctx!.getImageData(0, 0, canvas.width, canvas.height);
-        sub.next({
-          imdata: imdata,
-          coords: sliced.shift(),
-        });
+        const coords = sliced.shift();
+
+        if (coords) {
+          sub.next({ imdata: imdata, coords: coords.coords, });
+        } else {
+          sub.next({ imdata: imdata, coords: null, });
+        }
+
         // @ts-ignore
         video.requestVideoFrameCallback(handler); 
       } 

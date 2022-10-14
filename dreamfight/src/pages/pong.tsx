@@ -111,9 +111,14 @@ const PongPage = () => {
 
     videoFeed$(src)
       .subscribe(({ imdata, coords }) => {
-        console.log(coords);
         ctx!.putImageData(imdata, 0, 0);
         texture.baseTexture.update();
+
+        if (coords) {
+          /* console.log(coords); */
+          tennis.position.x = coords[0] * VIDEO.width;
+          tennis.position.y = coords[1] * VIDEO.height;
+        }
       });
 
     // const mlEvents$ = new Stream.Subject();
