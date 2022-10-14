@@ -32,7 +32,7 @@ const PongPage = () => {
     const texture = Pixi.Texture.from(canvas);
     const sprite = Pixi.Sprite.from(texture);
 
-    const src = "https://547f72e6652371c3.mediapackage.us-east-1.amazonaws.com/out/v1/28c261ccdfc94e1ca1925a4401ea4e48/index.m3u8";
+    const src = "https://ccf3786b925ee51c.mediapackage.us-east-1.amazonaws.com/out/v1/9c3ec1386b9e4f86ac657233229f5cba/index.m3u8";
 
     const node = document.getElementById("broadcast");
     node?.appendChild(app.view);
