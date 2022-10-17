@@ -6,7 +6,7 @@ import "@tensorflow/tfjs";
 import * as Observable from "rxjs";
 import ease from 'rx-ease';
 import videoFeed$ from '../streams/videoFeed';
-import videoChunks from '../data/data.json';
+import tennisBallPositions from '../data/data.json';
 import playIcon from "../images/play.svg";
 
 // Stub video object (to be replaced with some introspected data)
@@ -130,8 +130,6 @@ const PongPage = () => {
 
     const TICKER_INTERVAL = 1000 / 15; // FPS
 
-    const data = videoChunks.flat();
-
     videoFeed$(src)
       .subscribe((imdata) => {
         ctx!.putImageData(imdata, 0, 0);
@@ -142,7 +140,7 @@ const PongPage = () => {
         const n = (numPixels * 3) + (numPixels - 1);
         const pixels = imdata.data.slice(0, n);
         const playheadIndex = generatePlayheadIndex(pixels);
-        const coords = data[playheadIndex].coords;
+        const coords = tennisBallPositions[playheadIndex];
 
         if (coords) {
           tennis.position.x = coords[0] * VIDEO.width;

@@ -33,11 +33,7 @@ File.foreach('./data.txt').each do |line|
     if remaining > 0
       extra = ((curr_file+1)..max_files).to_a
       # results = [*results, *extra.map{ |f| "(dir=#{curr_dir}, file=#{f})" }]
-      results = [*results, *extra.map{ |f| {
-        dir: curr_dir,
-        file: f,
-        coords: nil
-      }}]
+      results = [*results, *extra.map{ |f| nil }]
     end
 
     # Because we have flushed out the current dir, we're back to 0 on the file
@@ -50,11 +46,7 @@ File.foreach('./data.txt').each do |line|
       (gap-1).times do |i|
         curr_dir = curr_dir + i + 1
         # results = [*results, *extra.map{ |f| "(dir=#{curr_dir}, file=#{f})" }]
-        results = [*results, *extra.map{ |f| {
-          dir: curr_dir,
-          file: f,
-          coords: nil
-        }}]
+        results = [*results, *extra.map{ |f| nil }]
       end
     end
 
@@ -63,11 +55,7 @@ File.foreach('./data.txt').each do |line|
     if gap > 1
       extra = ((curr_file)...next_file).to_a
       # results = [*results, *extra.map{ |f| "(dir=#{curr_dir + 1}, file=#{f})" }]
-      results = [*results, *extra.map{ |f| {
-        dir: curr_dir + 1,
-        file: f,
-        coords: nil
-      }}]
+      results = [*results, *extra.map{ |f| nil }]
     end
   elsif next_dir == curr_dir
     gap = next_file - curr_file 
@@ -75,11 +63,7 @@ File.foreach('./data.txt').each do |line|
     if gap > 1
       extra = ((curr_file+1)...next_file).to_a
       # results = [*results, *extra.map{ |f| "(dir=#{curr_dir}, file=#{f})" }]
-      results = [*results, *extra.map{ |f| {
-        dir: curr_dir,
-        file: f,
-        coords: nil
-      }}]
+      results = [*results, *extra.map{ |f| nil }]
     end
   else
     raise Exception.new('not expected')
@@ -90,11 +74,7 @@ File.foreach('./data.txt').each do |line|
   # Then process the new item
   case line
   when NO_BALL_PATTERN
-    item = { 
-      file: curr_file,
-      dir: curr_dir,
-      coords: nil
-    }
+    item = nil
   when BALL_PATTERN
     matched = BALL_PATTERN.match(line)
     abs = matched[1].split(',').map do |x| 
@@ -105,16 +85,13 @@ File.foreach('./data.txt').each do |line|
     full_width = 1920
     full_height = 1080
 
-    item = {
-      file: curr_file,
-      dir: curr_dir,
-      coords: [
-        (x1/full_width).round(7),
-        (y1/full_height).round(7),
-        (w/full_width).round(7),
-        (h/full_height).round(7)
-      ]
-    }
+    item = [
+      (x1/full_width).round(7),
+      (y1/full_height).round(7),
+      (w/full_width).round(7),
+      (h/full_height).round(7)
+    ]
+    
   else
     raise Exception.new('no pattern found')
   end
@@ -122,21 +99,4 @@ File.foreach('./data.txt').each do |line|
   results << item
 end
 
-j = 1
-chunks = []
-chunk = []
-
-results.each do |result|
-  chunk << result
-
-  if j < FRAMES_PER_CHUNK
-    j += 1
-  else
-    chunks << chunk
-    chunk = []
-    j = 1
-  end
-end
-
-
-STDOUT.print(chunks.to_json)
+STDOUT.print(results.to_json)
