@@ -7,6 +7,7 @@ import * as Observable from "rxjs";
 import ease from 'rx-ease';
 import videoFeed$ from '../streams/videoFeed';
 import tennisBallPositions from '../data/tennisBall.json';
+import { MockModel, ModelResults } from '../streams/mockModel';
 import playIcon from "../images/play.svg";
 
 // Stub video object (to be replaced with some introspected data)
@@ -16,28 +17,7 @@ const VIDEO = {
   fps: 15,
 };
 
-const generatePlayheadIndex = (arr: any) => {
-  let bits = '';
-  let i = 0;
-  const n = arr.length;
-
-  while (i < n) {
-    let value = arr[i]
-
-    if (value > 200) {
-      bits = bits.concat('1');
-    } else {
-      bits = bits.concat('0');
-    }
-
-    i += 4;
-  }
-
-  return parseInt(bits, 2);
-}
-
 const PADDLE_HEIGHT = 100;
-
 
 const PongPage = () => {
 
@@ -129,24 +109,21 @@ const PongPage = () => {
     });
 
     const TICKER_INTERVAL = 1000 / 15; // FPS
+    const mock = new MockModel();
 
     videoFeed$(src)
       .subscribe((imdata) => {
         ctx!.putImageData(imdata, 0, 0);
         texture.baseTexture.update();
 
-        /// Extract and compute playhead index to get stabbed data
-        /// TODO: Abstract me into a model-like object with preds as results
-        const numPixels = 14;
-        const n = (numPixels * 3) + (numPixels - 1);
-        const pixels = imdata.data.slice(0, n);
-        const playheadIndex = generatePlayheadIndex(pixels);
-        const coords = tennisBallPositions[playheadIndex];
+        mock.detect(imdata).then((preds: ModelResults) => {
+          const { bbox, score } = preds;
 
-        if (coords) {
-          tennis.position.x = coords[0] * VIDEO.width;
-          tennis.position.y = coords[1] * VIDEO.height;
-        }
+          if (bbox) {
+            tennis.position.x = bbox[0] * VIDEO.width;
+            tennis.position.y = bbox[1] * VIDEO.height;
+          }
+        });
       });
 
     // const mlEvents$ = new Stream.Subject();
