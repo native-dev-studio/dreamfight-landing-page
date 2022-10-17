@@ -6,7 +6,7 @@ import "@tensorflow/tfjs";
 import * as Observable from "rxjs";
 import ease from 'rx-ease';
 import videoFeed$ from '../streams/videoFeed';
-import tennisBallPositions from '../data/data.json';
+import tennisBallPositions from '../data/tennisBall.json';
 import playIcon from "../images/play.svg";
 
 // Stub video object (to be replaced with some introspected data)
