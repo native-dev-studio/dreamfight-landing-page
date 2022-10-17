@@ -136,6 +136,7 @@ const PongPage = () => {
         texture.baseTexture.update();
 
         /// Extract and compute playhead index to get stabbed data
+        /// TODO: Abstract me into a model-like object with preds as results
         const numPixels = 14;
         const n = (numPixels * 3) + (numPixels - 1);
         const pixels = imdata.data.slice(0, n);

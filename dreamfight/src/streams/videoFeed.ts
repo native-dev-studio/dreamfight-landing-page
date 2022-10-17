@@ -10,11 +10,7 @@ const VIDEO = {
 
 const videoFeed$ = (url: string) => {
   return new Observable.Observable((sub: Observable.Subscriber<ImageData>) => {
-
-    const hls = new Hls({ 
-      ...Hls.DefaultConfig,
-      ...{ startFragPrefetch: true }
-    });
+    const hls = new Hls({ ...Hls.DefaultConfig, ...{ autoStartLoad: true }});
 
     const video = document.createElement('video');
     video.muted = true;
