@@ -9,7 +9,7 @@ const VIDEO = {
 };
 
 const videoFeed$ = (url: string) => {
-  return new Observable.Observable((sub: Observable.Subscriber<{ imdata: ImageData, coords: any }>) => {
+  return new Observable.Observable((sub: Observable.Subscriber<ImageData>) => {
 
     const hls = new Hls({ 
       ...Hls.DefaultConfig,
@@ -26,51 +26,35 @@ const videoFeed$ = (url: string) => {
       video.src = url;
     }
 
-    hls.once(Hls.Events.FRAG_CHANGED, (evt, data) => {
-      const sn = data.frag.sn;
-      const secondsPerChunk      = 6;
-      const videoLengthInMinutes = 10;
-      const secondsInMinutes     = 60;
-      const chunkId = (sn as number) % ((videoLengthInMinutes * secondsInMinutes) / secondsPerChunk);
-      const sliced = videoChunks.slice(chunkId).flat();
+    /// Video is paused temporarily so that we can first obtain the `sequence number`
+    /// from live stream to find the relative position of the global playhead.
+    /// With that, we're able to serve our stubbed tennis ball coordinates for 
+    /// rendering.
+    video.play();
 
-      /// Video is paused temporarily so that we can first obtain the `sequence number`
-      /// from live stream to find the relative position of the global playhead.
-      /// With that, we're able to serve our stubbed tennis ball coordinates for 
-      /// rendering.
-      video.play();
+    const canvas = new OffscreenCanvas(VIDEO.width, VIDEO.height);
+    const ctx  = canvas.getContext('2d', { 
+      /// Indicates whether or not read-back operations are planned; forcing use of
+      /// software vs hardware acceleration which saves memory when calling 
+      /// getImageData frequently.
+      //
+      /// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
+      willReadFrequently: true 
+    }) as OffscreenCanvasRenderingContext2D;
 
-      console.log(`(sn=(${sn}), chunkId=(${chunkId}))`);
+    const handler = (timer: number) => {
+      /// Extract pixel source from video tag
+      ctx!.drawImage(video, 0, 0);
+      const imdata = ctx!.getImageData(0, 0, canvas.width, canvas.height);
 
-      const canvas = new OffscreenCanvas(VIDEO.width, VIDEO.height);
-      const ctx  = canvas.getContext('2d', { 
-        /// Indicates whether or not read-back operations are planned; forcing use of
-        /// software vs hardware acceleration which saves memory when calling 
-        /// getImageData frequently.
-        //
-        /// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
-        willReadFrequently: true 
-      }) as OffscreenCanvasRenderingContext2D;
-
-      const handler = (timer: number) => {
-        ctx!.drawImage(video, 0, 0);
-        const imdata = ctx!.getImageData(0, 0, canvas.width, canvas.height);
-        const coords = sliced.shift();
-
-        if (coords) {
-          sub.next({ imdata: imdata, coords: coords.coords, });
-        } else {
-          sub.next({ imdata: imdata, coords: null, });
-        }
-
-        // @ts-ignore
-        video.requestVideoFrameCallback(handler); 
-      } 
+      sub.next(imdata);
 
       // @ts-ignore
-      video.requestVideoFrameCallback(handler);
-    });
+      video.requestVideoFrameCallback(handler); 
+    } 
 
+    // @ts-ignore
+    video.requestVideoFrameCallback(handler);
   });
 }
 

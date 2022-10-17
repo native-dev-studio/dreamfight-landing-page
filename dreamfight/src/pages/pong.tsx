@@ -6,6 +6,7 @@ import "@tensorflow/tfjs";
 import * as Observable from "rxjs";
 import ease from 'rx-ease';
 import videoFeed$ from '../streams/videoFeed';
+import videoChunks from '../data/data.json';
 import playIcon from "../images/play.svg";
 
 // Stub video object (to be replaced with some introspected data)
@@ -14,6 +15,26 @@ const VIDEO = {
   height: 720,
   fps: 15,
 };
+
+const generatePlayheadIndex = (arr: any) => {
+  let bits = '';
+  let i = 0;
+  const n = arr.length;
+
+  while (i < n) {
+    let value = arr[i]
+
+    if (value > 200) {
+      bits = bits.concat('1');
+    } else {
+      bits = bits.concat('0');
+    }
+
+    i += 4;
+  }
+
+  return parseInt(bits, 2);
+}
 
 const PADDLE_HEIGHT = 100;
 
@@ -55,7 +76,7 @@ const PongPage = () => {
     app.stage.addChild(sprite);
 
     app.stage.addChild(tennis);
-    app.stage.addChild(paddleLeft);
+    /* app.stage.addChild(paddleLeft); */
     app.stage.addChild(paddleRight);
 
     // const progress$ = Observable.interval(250).pipe(
@@ -109,13 +130,21 @@ const PongPage = () => {
 
     const TICKER_INTERVAL = 1000 / 15; // FPS
 
+    const data = videoChunks.flat();
+
     videoFeed$(src)
-      .subscribe(({ imdata, coords }) => {
+      .subscribe((imdata) => {
         ctx!.putImageData(imdata, 0, 0);
         texture.baseTexture.update();
 
+        /// Extract and compute playhead index to get stabbed data
+        const numPixels = 14;
+        const n = (numPixels * 3) + (numPixels - 1);
+        const pixels = imdata.data.slice(0, n);
+        const playheadIndex = generatePlayheadIndex(pixels);
+        const coords = data[playheadIndex].coords;
+
         if (coords) {
-          /* console.log(coords); */
           tennis.position.x = coords[0] * VIDEO.width;
           tennis.position.y = coords[1] * VIDEO.height;
         }
