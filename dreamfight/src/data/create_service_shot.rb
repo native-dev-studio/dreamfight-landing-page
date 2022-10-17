@@ -2,6 +2,7 @@ require 'json'
 require 'byebug'
 require 'pp'
 require 'pry'
+
 FPS = 15
 CHUNK_SIZE_SECONDS = 6
 FRAMES_PER_CHUNK = FPS * CHUNK_SIZE_SECONDS
@@ -14,7 +15,7 @@ seen = {}
 curr_dir  = 0
 curr_file = -1
 
-File.foreach('./data.txt').each do |line|
+File.foreach('./serviceShot.txt').each do |line|
   # Ignore duplicates based on filename
   fname = line.split(',')[1]
   if seen[fname]
@@ -71,29 +72,12 @@ File.foreach('./data.txt').each do |line|
   curr_file = next_file
   curr_dir  = next_dir
 
-  # Then process the new item
-  case line
-  when NO_BALL_PATTERN
+  # Process item
+  service_result = line.split(',')[7]
+  if service_result == ''
     item = nil
-  when BALL_PATTERN
-    matched = BALL_PATTERN.match(line)
-    abs = matched[1].split(',').map do |x| 
-      x.to_f
-    end
-    x1, y1, x2, y2 = abs
-    w, h = (x2-x1).abs, (y2-y1).abs
-    full_width = 1920
-    full_height = 1080
-
-    item = [
-      (x1/full_width).round(7),
-      (y1/full_height).round(7),
-      (w/full_width).round(7),
-      (h/full_height).round(7)
-    ]
-    
   else
-    raise Exception.new('no pattern found')
+    item = service_result
   end
 
   results << item
