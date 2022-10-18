@@ -1,14 +1,7 @@
 import * as React from "react";
 import ease, { presets } from "rx-ease";
 import { of, fromEvent, timer, concat, Observable, Subject } from "rxjs";
-import {
-  map,
-  exhaustMap,
-  takeUntil,
-  concatMap,
-  tap,
-  startWith,
-} from "rxjs/operators";
+import { map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
 import { Bet } from "../components/Bet";
 import { BetOption } from "../types";
@@ -75,20 +68,17 @@ export function getBetOutcomes$(
   return _(
     betSelection$,
     concatMap((bet) => {
+      const durationTimer$ = timer(2000);
+
       return concat(
         _(
-          _(
-            timer(1000),
-            map((n) => n + 1)
-          ),
-          startWith(0),
-          tap(console.log),
+          timer(0, 1000),
           ease(presets.gentle[0], presets.gentle[1]),
-          map((n) => <TextEffect scale={n} bet={bet} />)
+          map((n) => <TextEffect scale={n} bet={bet} />),
+          takeUntil(durationTimer$)
         ),
         of(null) // Reset UI
       );
-    }),
-    tap(console.log)
+    })
   );
 }

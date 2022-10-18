@@ -11,15 +11,21 @@ type BetProps = {
 export function Bet(props: BetProps) {
   return (
     <div style={{ position: "absolute", padding: 30 }}>
-      <span style={{ fontSize: 24 }}>Service Shot ({props.duration}s)</span>
-      <span>index: {props.index}</span>
+      <span
+        style={{
+          fontSize: 24,
+          marginBottom: 24,
+          textAlign: "center",
+          display: "block",
+        }}
+      >
+        Service Shot ({props.duration / 1000}s)
+      </span>
 
       {props.options.map((s) => (
         <button
-          // id={IDS.buttonA}
           id={`button-${s.label}`}
           key={s.label}
-          // key={
           onClick={() => {
             props.onSelect(s);
           }}
@@ -27,8 +33,8 @@ export function Bet(props: BetProps) {
             borderRadius: 6,
             paddingLeft: 12,
             paddingRight: 12,
-            height: 64,
-            width: 160,
+            height: 72,
+            width: 200,
             marginBottom: 16,
             borderColor: "rgba(255, 255, 255, 0.3)",
             borderWidth: 1,

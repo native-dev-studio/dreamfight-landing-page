@@ -82,36 +82,45 @@ const PongPage = () => {
   return (
     <div
       style={{
-        width: VIDEO.width,
-        height: VIDEO.height,
-        position: "relative",
+        height: "100vh",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <div
-        id="broadcast"
         style={{
           width: VIDEO.width,
           height: VIDEO.height,
+          position: "relative",
         }}
       >
-        <video
-          ref={videoRef}
-          autoPlay
-          controls
-          muted
+        <div
+          id="broadcast"
           style={{
-            display: "none",
-            position: "absolute",
+            width: VIDEO.width,
+            height: VIDEO.height,
           }}
-        />
-      </div>
+        >
+          <video
+            ref={videoRef}
+            autoPlay
+            controls
+            muted
+            style={{
+              display: "none",
+              position: "absolute",
+            }}
+          />
+        </div>
 
-      <RenderStream with={() => getBets$(betSelection$)} />
-      <RenderStream with={() => getBetOutcomes$(betSelection$)} />
+        <RenderStream with={() => getBets$(betSelection$)} />
+        <RenderStream with={() => getBetOutcomes$(betSelection$)} />
 
-      <button id={IDS.betButton}>Bet</button>
+        <button id={IDS.betButton}>Bet</button>
 
-      {/* <div
+        {/* <div
         id={IDS.videoOverlay}
         style={{
           display: "none",
@@ -146,6 +155,7 @@ const PongPage = () => {
           <img src={playIcon} alt="" />
         </button>
       </div> */}
+      </div>
     </div>
   );
 };
