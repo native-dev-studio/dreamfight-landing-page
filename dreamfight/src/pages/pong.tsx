@@ -51,13 +51,13 @@ const PongPage = () => {
     app.stage.addChild(tennis);
 
     const TICKER_INTERVAL = 1_000 / VIDEO.fps;
-    const mock = new MockTennisBallDetection();
+    const mockTennisBall = new MockTennisBallDetection();
 
     videoFeed$(VIDEO.src).subscribe((imdata) => {
       ctx!.putImageData(imdata, 0, 0);
       texture.baseTexture.update();
 
-      mock.detect(imdata).then((coords: Coordinates | null) => {
+      mockTennisBall.detect(imdata).then((coords: Coordinates | null) => {
         if (coords) {
           const [x, y, w, h] = coords;
 
