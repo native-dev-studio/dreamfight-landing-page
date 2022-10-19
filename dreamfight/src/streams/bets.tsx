@@ -1,12 +1,11 @@
 import * as React from "react";
 import ease, { presets } from "rx-ease";
 import { of, fromEvent, timer, concat, Observable, Subject } from "rxjs";
-import { iff, filter, map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
+import { filter, map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
 import { Bet } from "../components/Bet";
-import { BetOption } from "../types";
+import { BetStatus, BetTransitions, BetOption } from "../types";
 import { IDS } from "../constants";
-import { BetStatus, BetTransitions } from '../streams/detectServiceEvent';
 import { TextEffect } from "../components/TextEffect";
 
 type ServiceShot = {

@@ -4,15 +4,15 @@ import * as Pixi from "pixi.js";
 import * as Rx from "rxjs";
 // import * as cocoSSD from "@tensorflow-models/coco-ssd";
 import { VideoSubject } from "../streams/videoFeed";
-import { Coordinates, MaybeCoordinates, detectTennisBall$ } from "../streams/detectTennisBall";
-import { BetStatus, BetTransitions, detectServiceEvents$ } from "../streams/detectServiceEvent";
+import { detectTennisBall$ } from "../streams/detectTennisBall";
+import { detectServiceEvents$ } from "../streams/detectServiceEvent";
 import { pipe as _ } from "fp-ts/lib/function";
 import "@tensorflow/tfjs";
 
 import { RenderStream } from "../components/RenderStream";
 import { IDS } from "../constants";
 import { getBetOutcomes$, getBets$ } from "../streams/bets";
-import { BetOption } from "../types";
+import { BetStatus, BetTransitions, Coordinates, BetOption } from "../types";
 import { doPlayState$ } from "../streams/playState";
 import {between} from "fp-ts/lib/Ord";
 
@@ -68,7 +68,7 @@ const PongPage = () => {
     _(
       videoFeed$,
       detectTennisBall$,
-    ).subscribe((maybeCoords: MaybeCoordinates) => {
+    ).subscribe((maybeCoords: Coordinates | null) => {
       if (maybeCoords === null) {
         return;
       }

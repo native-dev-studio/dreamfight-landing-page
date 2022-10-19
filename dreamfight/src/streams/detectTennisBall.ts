@@ -2,21 +2,12 @@ import { Observable, Subject } from "rxjs";
 import { map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
 import { generatePlayheadIndex } from './mockUtils';
+import { Coordinates } from '../types';
 import tennisBallPositions from '../data/tennisBall.json';
-
-export type Coordinates = [
-  number,
-  number,
-  number,
-  number
-];
-
-export type MaybeCoordinates = Coordinates | null;
-
 
 export function detectTennisBall$(
   imageSource$: Subject<ImageData>
-): Observable<MaybeCoordinates> {
+): Observable<Coordinates | null> {
   return _(
     imageSource$,
     map((imdata: ImageData) => {

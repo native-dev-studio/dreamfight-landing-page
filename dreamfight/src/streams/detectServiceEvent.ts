@@ -3,28 +3,7 @@ import { distinctUntilChanged, map, exhaustMap, takeUntil, concatMap } from "rxj
 import { pipe as _ } from "fp-ts/lib/function";
 import { generatePlayheadIndex } from './mockUtils';
 import serviceEvents from '../data/serviceShot.json';
-
-export enum BetStatus {
-  Noop      = 'noop',
-  Closed    = 'closed',
-  Open      = 'open',
-  Submitted = 'submitted',
-  Executed  = 'executed',
-  //Settled
-}
-
-export enum ServiceOutcome {
-  ServerWon   = "server_won",
-  ReceiverWon = "receiver_won",
-  DoubleFault = "double_fault",
-  Ace         = "ace",
-}
-
-export type BetTransitions = { 
-  status: BetStatus,
-  outcome?: ServiceOutcome,
-};
-
+import { BetStatus, ServiceOutcome, BetTransitions } from '../types';
 
 export function detectServiceEvents$(
   imageSource$: Subject<ImageData>
