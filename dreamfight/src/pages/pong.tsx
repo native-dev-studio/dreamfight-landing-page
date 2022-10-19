@@ -53,14 +53,18 @@ const PongPage = () => {
     const TICKER_INTERVAL = 1_000 / VIDEO.fps;
     const mockTennisBall = new MockTennisBallDetection();
 
-    videoFeed$(VIDEO.src).subscribe((imdata) => {
+    const videoFeed = videoFeed$(VIDEO);
+
+    videoFeed.subscribe((imdata) => {
       ctx!.putImageData(imdata, 0, 0);
       texture.baseTexture.update();
+    });
 
+    /// TODO: Convert into stream semantics
+    videoFeed.subscribe((imdata: ImageData) => {
       mockTennisBall.detect(imdata).then((coords: Coordinates | null) => {
         if (coords) {
           const [x, y, w, h] = coords;
-
           tennis.position.x = x * VIDEO.width;
           tennis.position.y = y * VIDEO.height;
           tennis.width      = w * VIDEO.width;

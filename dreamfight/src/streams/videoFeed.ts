@@ -1,32 +1,28 @@
 import * as Observable from "rxjs";
 import Hls from "hls.js";
 
-const VIDEO = {
-  width: 1280,
-  height: 720,
-  fps: 15,
-};
+type VideoFeedProps = {
+  src: string,
+  width: number,
+  height: number,
+}
 
-const videoFeed$ = (url: string) => {
+const videoFeed$ = ({ src, width, height }: VideoFeedProps) => {
   const subject = new Observable.Subject<ImageData>();
   const hls = new Hls({ ...Hls.DefaultConfig, ...{ autoStartLoad: true } });
   const video = document.createElement("video");
   video.muted = true;
 
   if (Hls.isSupported()) {
-    hls.loadSource(url);
+    hls.loadSource(src);
     hls.attachMedia(video);
   } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = url;
+    video.src = src;
   }
 
-  /// Video is paused temporarily so that we can first obtain the `sequence number`
-  /// from live stream to find the relative position of the global playhead.
-  /// With that, we're able to serve our stubbed tennis ball coordinates for
-  /// rendering.
   video.play();
 
-  const canvas = new OffscreenCanvas(VIDEO.width, VIDEO.height);
+  const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext("2d", {
     /// Indicates whether or not read-back operations are planned; forcing use of
     /// software vs hardware acceleration which saves memory when calling
