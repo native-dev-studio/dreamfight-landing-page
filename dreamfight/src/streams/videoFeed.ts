@@ -1,6 +1,5 @@
 import * as Observable from "rxjs";
-import Hls, { FragChangedData } from "hls.js";
-import videoChunks from "../data/data.json";
+import Hls from "hls.js";
 
 const VIDEO = {
   width: 1280,
@@ -10,9 +9,9 @@ const VIDEO = {
 
 const videoFeed$ = (url: string) => {
   return new Observable.Observable((sub: Observable.Subscriber<ImageData>) => {
-    const hls = new Hls({ ...Hls.DefaultConfig, ...{ autoStartLoad: true }});
+    const hls = new Hls({ ...Hls.DefaultConfig, ...{ autoStartLoad: true } });
 
-    const video = document.createElement('video');
+    const video = document.createElement("video");
     video.muted = true;
 
     if (Hls.isSupported()) {
@@ -24,18 +23,18 @@ const videoFeed$ = (url: string) => {
 
     /// Video is paused temporarily so that we can first obtain the `sequence number`
     /// from live stream to find the relative position of the global playhead.
-    /// With that, we're able to serve our stubbed tennis ball coordinates for 
+    /// With that, we're able to serve our stubbed tennis ball coordinates for
     /// rendering.
     video.play();
 
     const canvas = new OffscreenCanvas(VIDEO.width, VIDEO.height);
-    const ctx  = canvas.getContext('2d', { 
+    const ctx = canvas.getContext("2d", {
       /// Indicates whether or not read-back operations are planned; forcing use of
-      /// software vs hardware acceleration which saves memory when calling 
+      /// software vs hardware acceleration which saves memory when calling
       /// getImageData frequently.
       //
       /// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
-      willReadFrequently: true 
+      willReadFrequently: true,
     }) as OffscreenCanvasRenderingContext2D;
 
     const handler = (timer: number) => {
@@ -46,12 +45,12 @@ const videoFeed$ = (url: string) => {
       sub.next(imdata);
 
       // @ts-ignore
-      video.requestVideoFrameCallback(handler); 
-    } 
+      video.requestVideoFrameCallback(handler);
+    };
 
     // @ts-ignore
     video.requestVideoFrameCallback(handler);
   });
-}
+};
 
 export default videoFeed$;
