@@ -1,31 +1,22 @@
 import tennisBallPositions from '../data/tennisBall.json';
 
-type ModelResults = {
-  bbox: [number, number, number, number],
-  score: number
-}
+type Coordinates = [number, number, number, number];
 
-
-class MockModel {
-  tennisBallPositions: any;
+class MockTennisBallDetection {
+  tennisBallPositions: (Coordinates | null)[];
 
   constructor() {
-    this.tennisBallPositions = tennisBallPositions;
+    this.tennisBallPositions = tennisBallPositions as (Coordinates | null)[];
   }
 
-  detect(imdata: ImageData): Promise<ModelResults> {
-    const playheadIndex = this.generatePlayheadIndex(imdata);
+  detect(imdata: ImageData): Promise<Coordinates | null> {
+    const playheadIndex = generatePlayheadIndex(imdata);
     const bbox = this.tennisBallPositions[playheadIndex];
-
-    const results: ModelResults = {
-      bbox,
-      score: 1.0
-    }
-
-    return Promise.resolve(results);
+    return Promise.resolve(bbox);
   }
+}
 
-  generatePlayheadIndex(imdata: ImageData): number {
+const generatePlayheadIndex = (imdata: ImageData): number => {
     /// Assume there will be binary expression of an index that represents the frame
     /// count of the video we're displaying. This binary expression is 14 pixels in length
     /// (or 16,384 max values) found on the top-left of the image that we can extract 
@@ -68,7 +59,6 @@ class MockModel {
     const index = parseInt(bits, 2);
 
     return index;
-  }
 }
 
-export { MockModel, ModelResults };
+export { MockTennisBallDetection, Coordinates};
