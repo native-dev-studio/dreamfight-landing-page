@@ -15,10 +15,7 @@ class MockModel {
 
   detect(imdata: ImageData): Promise<ModelResults> {
     /// Extract composite key and produce index for stubbed data
-    const numPixels = 14;
-    const n = (numPixels * 3) + (numPixels - 1);
-    const pixels = imdata.data.slice(0, n);
-    const playheadIndex = this.generatePlayheadIndex(pixels);
+    const playheadIndex = this.generatePlayheadIndex(imdata);
 
     const bbox = this.tennisBallPositions[playheadIndex];
 
@@ -30,13 +27,17 @@ class MockModel {
     return Promise.resolve(results);
   }
 
-  generatePlayheadIndex(arr: any): number {
+  generatePlayheadIndex(imdata: ImageData): number {
+    const numPixels = 14;
+    const n = (numPixels * 3) + (numPixels - 1);
+    const pixels = imdata.data.slice(0, n);
+
     let bits = '';
     let i = 0;
-    const n = arr.length;
+    const len = pixels.length;
 
-    while (i < n) {
-      let value = arr[i]
+    while (i < len) {
+      let value = pixels[i];
 
       if (value > 200) {
         bits = bits.concat('1');
