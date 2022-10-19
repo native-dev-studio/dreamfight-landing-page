@@ -3,14 +3,14 @@ import * as React from "react";
 import * as Pixi from "pixi.js";
 import * as Rx from "rxjs";
 // import * as cocoSSD from "@tensorflow-models/coco-ssd";
-import { VideoSubject } from "../streams/videoFeed";
-import { detectTennisBall$ } from "../streams/detectTennisBall";
-import { detectServiceEvents$ } from "../streams/detectServiceEvent";
 import { pipe as _ } from "fp-ts/lib/function";
 import "@tensorflow/tfjs";
 
 import { RenderStream } from "../components/RenderStream";
 import { IDS } from "../constants";
+import { VideoSubject } from "../streams/videoFeed";
+import { detectTennisBall$ } from "../streams/detectTennisBall";
+import { detectServiceEvents$ } from "../streams/detectServiceEvent";
 import { getBetOutcomes$, getBets$ } from "../streams/bets";
 import { BetStatus, BetTransitions, Coordinates, BetOption } from "../types";
 import { doPlayState$ } from "../streams/playState";
@@ -30,6 +30,7 @@ const betSelection$ = new Rx.Subject<BetOption>();
 const bettingWindows$ = _(
   videoFeed$,
   detectServiceEvents$,
+  Rx.tap(console.log),
   Rx.filter(betTransition => betTransition.status == BetStatus.Open)
 );
 
