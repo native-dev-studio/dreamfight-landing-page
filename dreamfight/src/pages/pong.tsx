@@ -78,11 +78,7 @@ const PongPage = () => {
     _(
       videoFeed$,
       detectServiceEvents$
-    ).subscribe((result: BetTransitions) => {
-      if (result.outcome) {
-        console.log(result.outcome.toString());
-      }
-    });
+    ).subscribe(console.log);
 
     doPlayState$(videoPlayPauseIntents$).subscribe(console.log);
 
