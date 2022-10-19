@@ -51,16 +51,16 @@ const PongPage = () => {
     app.stage.addChild(tennis);
 
     const TICKER_INTERVAL = 1_000 / VIDEO.fps;
-    const mockTennisBall = new MockTennisBallDetection();
 
     const videoFeed = videoFeed$(VIDEO);
+    const mockTennisBall = new MockTennisBallDetection();
+    const mockService = new MockServiceDetection();
 
     videoFeed.subscribe((imdata) => {
       ctx!.putImageData(imdata, 0, 0);
       texture.baseTexture.update();
     });
 
-    /// TODO: Convert into stream semantics
     videoFeed.subscribe((imdata: ImageData) => {
       mockTennisBall.detect(imdata).then((coords: Coordinates | null) => {
         if (coords) {
@@ -70,6 +70,12 @@ const PongPage = () => {
           tennis.width      = w * VIDEO.width;
           tennis.height     = h * VIDEO.height;
         }
+      });
+    });
+
+    videoFeed.subscribe((imdata: ImageData) => {
+      mockService.detect(imdata).then((outcome: Outcome | null) => {
+        console.log(outcome);
       });
     });
 

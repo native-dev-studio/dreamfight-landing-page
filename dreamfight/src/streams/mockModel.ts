@@ -18,10 +18,10 @@ class MockTennisBallDetection {
 }
 
 enum Outcome {
-  ServerWon    = 'server_won',
-  RecipientWon = 'recipient_won',
-  DoubleFault  = 'double_fault',
-  Ace          = 'ace',
+  ServerWon,
+  ReceiverWon,
+  DoubleFault,
+  Ace, 
 }
 
 class MockServiceDetection {
@@ -38,8 +38,8 @@ class MockServiceDetection {
     switch (outcome) {
       case "server_won":
         return Promise.resolve(Outcome.ServerWon);
-      case "recipient_won":
-        return Promise.resolve(Outcome.RecipientWon);
+      case "receiver_won":
+        return Promise.resolve(Outcome.ReceiverWon);
       case "double_fault":
         return Promise.resolve(Outcome.DoubleFault);
       case "ace":
@@ -47,7 +47,7 @@ class MockServiceDetection {
       case null:
         return Promise.resolve(null);
       default:
-        return Promise.reject('unexpected outcome; missing handler');
+        return Promise.reject(`unexpected outcome; got ${outcome}`);
     }
   }
 }
