@@ -7,7 +7,7 @@ type VideoFeedProps = {
   height: number,
 }
 
-const videoFeed$ = ({ src, width, height }: VideoFeedProps) => {
+export const VideoSubject = ({ src, width, height }: VideoFeedProps) => {
   const subject = new Observable.Subject<ImageData>();
   const hls = new Hls({ ...Hls.DefaultConfig, ...{ autoStartLoad: true } });
   const video = document.createElement("video");
@@ -48,5 +48,3 @@ const videoFeed$ = ({ src, width, height }: VideoFeedProps) => {
 
   return subject;
 };
-
-export default videoFeed$;

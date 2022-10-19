@@ -6,7 +6,7 @@ import tennisBallPositions from '../data/tennisBall.json';
 import serviceEvents from '../data/serviceShot.json';
 
 export type Coordinates = [number, number, number, number];
-export type MaybeCoordinates = [number, number, number, number] | null;
+export type MaybeCoordinates = Coordinates | null;
 
 export function detectTennisBall$(
   imageSource$: Subject<ImageData>

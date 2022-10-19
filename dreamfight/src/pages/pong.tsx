@@ -3,8 +3,8 @@ import * as React from "react";
 import * as Pixi from "pixi.js";
 import * as Rx from "rxjs";
 // import * as cocoSSD from "@tensorflow-models/coco-ssd";
-import videoFeed$ from "../streams/videoFeed";
-import { MaybeCoordinates, detectTennisBall$, MockTennisBallDetection, MockServiceDetection, BetResult, Coordinates } from "../streams/mockModel";
+import { VideoSubject } from "../streams/videoFeed";
+import { MaybeCoordinates, detectTennisBall$, MockServiceDetection, BetResult, Coordinates } from "../streams/mockModel";
 import { pipe as _ } from "fp-ts/lib/function";
 import "@tensorflow/tfjs";
 
@@ -22,6 +22,7 @@ const VIDEO = {
   fps: 15,
 };
 
+const videoFeed$ = VideoSubject(VIDEO);
 const videoPlayPauseIntents$ = new Rx.Subject();
 const betSelection$ = new Rx.Subject<BetOption>();
 
@@ -52,17 +53,16 @@ const PongPage = () => {
 
     const TICKER_INTERVAL = 1_000 / VIDEO.fps;
 
-    const videoFeed = videoFeed$(VIDEO);
-    const mockTennisBall = new MockTennisBallDetection();
+    /// TODO: Streamify me
     const mockService = new MockServiceDetection();
 
-    videoFeed.subscribe((imdata) => {
+    videoFeed$.subscribe((imdata) => {
       ctx!.putImageData(imdata, 0, 0);
       texture.baseTexture.update();
     });
 
     _(
-      videoFeed,
+      videoFeed$,
       detectTennisBall$,
     ).subscribe((maybeCoords: MaybeCoordinates) => {
       if (maybeCoords === null) {
@@ -77,7 +77,7 @@ const PongPage = () => {
       tennis.height     = h * VIDEO.height;
     });
 
-    videoFeed.subscribe((imdata: ImageData) => {
+    videoFeed$.subscribe((imdata: ImageData) => {
       mockService.detect(imdata).then((result: BetResult) => {
         if (result.outcome) {
           console.log(result.outcome);
