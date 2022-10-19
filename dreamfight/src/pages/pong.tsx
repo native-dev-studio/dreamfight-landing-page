@@ -4,7 +4,7 @@ import * as Pixi from "pixi.js";
 import * as Rx from "rxjs";
 // import * as cocoSSD from "@tensorflow-models/coco-ssd";
 import videoFeed$ from "../streams/videoFeed";
-import { MockTennisBallDetection, MockServiceDetection, BetResult, Coordinates } from "../streams/mockModel";
+import { MaybeCoordinates, detectTennisBall$, MockTennisBallDetection, MockServiceDetection, BetResult, Coordinates } from "../streams/mockModel";
 import { pipe as _ } from "fp-ts/lib/function";
 import "@tensorflow/tfjs";
 
@@ -61,16 +61,20 @@ const PongPage = () => {
       texture.baseTexture.update();
     });
 
-    videoFeed.subscribe((imdata: ImageData) => {
-      mockTennisBall.detect(imdata).then((coords: Coordinates | null) => {
-        if (coords) {
-          const [x, y, w, h] = coords;
-          tennis.position.x = x * VIDEO.width;
-          tennis.position.y = y * VIDEO.height;
-          tennis.width      = w * VIDEO.width;
-          tennis.height     = h * VIDEO.height;
-        }
-      });
+    _(
+      videoFeed,
+      detectTennisBall$,
+    ).subscribe((maybeCoords: MaybeCoordinates) => {
+      if (maybeCoords === null) {
+        return;
+      }
+
+      const [x, y, w, h] = maybeCoords;
+
+      tennis.position.x = x * VIDEO.width;
+      tennis.position.y = y * VIDEO.height;
+      tennis.width      = w * VIDEO.width;
+      tennis.height     = h * VIDEO.height;
     });
 
     videoFeed.subscribe((imdata: ImageData) => {

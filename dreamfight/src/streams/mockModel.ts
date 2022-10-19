@@ -1,23 +1,27 @@
+import { Observable, Subject } from "rxjs";
+import { map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
+import { pipe as _ } from "fp-ts/lib/function";
+
 import tennisBallPositions from '../data/tennisBall.json';
 import serviceEvents from '../data/serviceShot.json';
 
-type Coordinates = [number, number, number, number];
+export type Coordinates = [number, number, number, number];
+export type MaybeCoordinates = [number, number, number, number] | null;
 
-class MockTennisBallDetection {
-  tennisBallPositions: (Coordinates | null)[];
-
-  constructor() {
-    this.tennisBallPositions = tennisBallPositions as (Coordinates | null)[];
-  }
-
-  detect(imdata: ImageData): Promise<Coordinates | null> {
-    const playheadIndex = generatePlayheadIndex(imdata);
-    const bbox = this.tennisBallPositions[playheadIndex];
-    return Promise.resolve(bbox);
-  }
+export function detectTennisBall$(
+  imageSource$: Subject<ImageData>
+): Observable<MaybeCoordinates> {
+  return _(
+    imageSource$,
+    map((imdata: ImageData) => {
+      const playheadIndex = generatePlayheadIndex(imdata);
+      const maybeCoords = tennisBallPositions[playheadIndex] as MaybeCoordinates;
+      return maybeCoords;
+    })
+  )
 }
 
-enum BetStatus {
+export enum BetStatus {
   Noop,
   Closed,
   Open,
@@ -26,19 +30,19 @@ enum BetStatus {
   //Settled
 }
 
-enum ServiceOutcome {
+export enum ServiceOutcome {
   ServerWon,
   ReceiverWon,
   DoubleFault,
   Ace, 
 }
 
-type BetResult = { 
+export type BetResult = { 
   status: BetStatus,
   outcome: ServiceOutcome | null,
 };
 
-class MockServiceDetection {
+export class MockServiceDetection {
   serviceEvents: any;
 
   constructor() {
@@ -110,10 +114,3 @@ const generatePlayheadIndex = (imdata: ImageData): number => {
 
     return index;
 }
-
-export { 
-  MockServiceDetection,
-  MockTennisBallDetection,
-  BetResult,
-  Coordinates,
-};
