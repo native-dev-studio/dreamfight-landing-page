@@ -5,7 +5,7 @@ import * as Rx from "rxjs";
 // import * as cocoSSD from "@tensorflow-models/coco-ssd";
 import { VideoSubject } from "../streams/videoFeed";
 import { Coordinates, MaybeCoordinates, detectTennisBall$ } from "../streams/detectTennisBall";
-import { BetTransitions, detectServiceEvents$ } from "../streams/detectServiceEvent";
+import { BetStatus, BetTransitions, detectServiceEvents$ } from "../streams/detectServiceEvent";
 import { pipe as _ } from "fp-ts/lib/function";
 import "@tensorflow/tfjs";
 
@@ -14,6 +14,7 @@ import { IDS } from "../constants";
 import { getBetOutcomes$, getBets$ } from "../streams/bets";
 import { BetOption } from "../types";
 import { doPlayState$ } from "../streams/playState";
+import {between} from "fp-ts/lib/Ord";
 
 // Stub video object (to be replaced with some introspected data)
 const VIDEO = {
@@ -26,6 +27,11 @@ const VIDEO = {
 const videoFeed$ = VideoSubject(VIDEO);
 const videoPlayPauseIntents$ = new Rx.Subject();
 const betSelection$ = new Rx.Subject<BetOption>();
+const bettingWindows$ = _(
+  videoFeed$,
+  detectServiceEvents$,
+  Rx.filter(betTransition => betTransition.status == BetStatus.Open)
+);
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -75,11 +81,6 @@ const PongPage = () => {
       tennis.height     = h * VIDEO.height;
     });
 
-    _(
-      videoFeed$,
-      detectServiceEvents$
-    ).subscribe(console.log);
-
     doPlayState$(videoPlayPauseIntents$).subscribe(console.log);
 
     return () => {
@@ -123,10 +124,10 @@ const PongPage = () => {
           />
         </div>
 
-        <RenderStream with={() => getBets$(betSelection$)} />
+        <RenderStream with={() => getBets$(bettingWindows$, betSelection$)} />
         <RenderStream with={() => getBetOutcomes$(betSelection$)} />
 
-        <button id={IDS.betButton}>Bet</button>
+        {/* <button id={IDS.betButton}>Bet</button> */}
 
         {/* <div
         id={IDS.videoOverlay}

@@ -1,11 +1,12 @@
 import * as React from "react";
 import ease, { presets } from "rx-ease";
 import { of, fromEvent, timer, concat, Observable, Subject } from "rxjs";
-import { map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
+import { iff, filter, map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
 import { Bet } from "../components/Bet";
 import { BetOption } from "../types";
 import { IDS } from "../constants";
+import { BetStatus, BetTransitions } from '../streams/detectServiceEvent';
 import { TextEffect } from "../components/TextEffect";
 
 type ServiceShot = {
@@ -25,14 +26,13 @@ const STUB_SERVICE_SHOT: ServiceShot = {
 };
 
 export function getBets$(
-  betSelection$: Subject<BetOption>
+  source: Observable<BetTransitions>,
+  betSelection$: Subject<BetOption>,
 ): Observable<React.ReactNode> {
   return _(
     _(
-      fromEvent(
-        document.getElementById(IDS.betButton) as HTMLButtonElement,
-        "click"
-      ),
+      source,
+      filter(betTransition => betTransition.status == BetStatus.Open),
       map(() => STUB_SERVICE_SHOT)
     ),
     exhaustMap((bet) => {
@@ -54,7 +54,7 @@ export function getBets$(
             </div>
           )),
           takeUntil(betSelection$),
-          takeUntil(durationTimer$)
+          takeUntil(durationTimer$),
         ),
         of(null) // Reset UI
       );
