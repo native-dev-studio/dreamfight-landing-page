@@ -4,7 +4,7 @@ import * as Pixi from "pixi.js";
 import * as Rx from "rxjs";
 // import * as cocoSSD from "@tensorflow-models/coco-ssd";
 import videoFeed$ from "../streams/videoFeed";
-import { MockTennisBallDetection, Coordinates } from "../streams/mockModel";
+import { MockTennisBallDetection, MockServiceDetection, Outcome, Coordinates } from "../streams/mockModel";
 import { pipe as _ } from "fp-ts/lib/function";
 import "@tensorflow/tfjs";
 
@@ -38,9 +38,6 @@ const PongPage = () => {
     const texture = Pixi.Texture.from(canvas);
     const sprite = Pixi.Sprite.from(texture);
 
-    const src =
-      "https://ccf3786b925ee51c.mediapackage.us-east-1.amazonaws.com/out/v1/9c3ec1386b9e4f86ac657233229f5cba/index.m3u8";
-
     const node = document.getElementById("broadcast");
     node?.appendChild(app.view);
 
@@ -53,10 +50,10 @@ const PongPage = () => {
 
     app.stage.addChild(tennis);
 
-    const TICKER_INTERVAL = 1000 / 15; // FPS
+    const TICKER_INTERVAL = 1_000 / VIDEO.fps;
     const mock = new MockTennisBallDetection();
 
-    videoFeed$(src).subscribe((imdata) => {
+    videoFeed$(VIDEO.src).subscribe((imdata) => {
       ctx!.putImageData(imdata, 0, 0);
       texture.baseTexture.update();
 

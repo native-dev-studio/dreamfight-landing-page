@@ -1,4 +1,5 @@
 import tennisBallPositions from '../data/tennisBall.json';
+import serviceEvents from '../data/serviceShot.json';
 
 type Coordinates = [number, number, number, number];
 
@@ -13,6 +14,41 @@ class MockTennisBallDetection {
     const playheadIndex = generatePlayheadIndex(imdata);
     const bbox = this.tennisBallPositions[playheadIndex];
     return Promise.resolve(bbox);
+  }
+}
+
+enum Outcome {
+  ServerWon    = 'server_won',
+  RecipientWon = 'recipient_won',
+  DoubleFault  = 'double_fault',
+  Ace          = 'ace',
+}
+
+class MockServiceDetection {
+  serviceEvents: any;
+
+  constructor() {
+    this.serviceEvents = serviceEvents as any;
+  }
+
+  detect(imdata: ImageData): Promise<Outcome | null> {
+    const playheadIndex = generatePlayheadIndex(imdata);
+    const outcome = this.serviceEvents[playheadIndex];
+
+    switch (outcome) {
+      case "server_won":
+        return Promise.resolve(Outcome.ServerWon);
+      case "recipient_won":
+        return Promise.resolve(Outcome.RecipientWon);
+      case "double_fault":
+        return Promise.resolve(Outcome.DoubleFault);
+      case "ace":
+        return Promise.resolve(Outcome.Ace);
+      case null:
+        return Promise.resolve(null);
+      default:
+        return Promise.reject('unexpected outcome; missing handler');
+    }
   }
 }
 
@@ -61,4 +97,9 @@ const generatePlayheadIndex = (imdata: ImageData): number => {
     return index;
 }
 
-export { MockTennisBallDetection, Coordinates};
+export { 
+  MockServiceDetection,
+  MockTennisBallDetection,
+  Outcome,
+  Coordinates,
+};
