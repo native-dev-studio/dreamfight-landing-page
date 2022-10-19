@@ -17,12 +17,26 @@ class MockTennisBallDetection {
   }
 }
 
-enum Outcome {
+enum BetStatus {
+  Noop,
+  Closed,
+  Open,
+  Submitted,
+  Executed,
+  //Settled
+}
+
+enum ServiceOutcome {
   ServerWon,
   ReceiverWon,
   DoubleFault,
   Ace, 
 }
+
+type BetResult = { 
+  status: BetStatus,
+  outcome: ServiceOutcome | null,
+};
 
 class MockServiceDetection {
   serviceEvents: any;
@@ -31,21 +45,21 @@ class MockServiceDetection {
     this.serviceEvents = serviceEvents as any;
   }
 
-  detect(imdata: ImageData): Promise<Outcome | null> {
+  detect(imdata: ImageData): Promise<BetResult> {
     const playheadIndex = generatePlayheadIndex(imdata);
-    const outcome = this.serviceEvents[playheadIndex];
+    const [status, outcome] = this.serviceEvents[playheadIndex];
 
     switch (outcome) {
       case "server_won":
-        return Promise.resolve(Outcome.ServerWon);
+        return Promise.resolve({ status: BetStatus.Executed, outcome: ServiceOutcome.ServerWon });
       case "receiver_won":
-        return Promise.resolve(Outcome.ReceiverWon);
+        return Promise.resolve({ status: BetStatus.Executed, outcome: ServiceOutcome.ReceiverWon });
       case "double_fault":
-        return Promise.resolve(Outcome.DoubleFault);
+        return Promise.resolve({ status: BetStatus.Executed, outcome: ServiceOutcome.DoubleFault });
       case "ace":
-        return Promise.resolve(Outcome.Ace);
+        return Promise.resolve({ status: BetStatus.Executed, outcome: ServiceOutcome.Ace });
       case null:
-        return Promise.resolve(null);
+        return Promise.resolve({ status: BetStatus.Noop, outcome: null });
       default:
         return Promise.reject(`unexpected outcome; got ${outcome}`);
     }
@@ -100,6 +114,6 @@ const generatePlayheadIndex = (imdata: ImageData): number => {
 export { 
   MockServiceDetection,
   MockTennisBallDetection,
-  Outcome,
+  BetResult,
   Coordinates,
 };

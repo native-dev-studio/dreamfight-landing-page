@@ -4,7 +4,7 @@ import * as Pixi from "pixi.js";
 import * as Rx from "rxjs";
 // import * as cocoSSD from "@tensorflow-models/coco-ssd";
 import videoFeed$ from "../streams/videoFeed";
-import { MockTennisBallDetection, MockServiceDetection, Outcome, Coordinates } from "../streams/mockModel";
+import { MockTennisBallDetection, MockServiceDetection, BetResult, Coordinates } from "../streams/mockModel";
 import { pipe as _ } from "fp-ts/lib/function";
 import "@tensorflow/tfjs";
 
@@ -74,8 +74,10 @@ const PongPage = () => {
     });
 
     videoFeed.subscribe((imdata: ImageData) => {
-      mockService.detect(imdata).then((outcome: Outcome | null) => {
-        console.log(outcome);
+      mockService.detect(imdata).then((result: BetResult) => {
+        if (result.outcome) {
+          console.log(result.outcome);
+        }
       });
     });
 

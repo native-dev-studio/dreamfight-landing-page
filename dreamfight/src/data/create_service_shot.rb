@@ -34,7 +34,7 @@ File.foreach('./serviceShot.txt').each do |line|
     if remaining > 0
       extra = ((curr_file+1)..max_files).to_a
       # results = [*results, *extra.map{ |f| "(dir=#{curr_dir}, file=#{f})" }]
-      results = [*results, *extra.map{ |f| nil }]
+      results = [*results, *extra.map{ |f| [nil, nil] }]
     end
 
     # Because we have flushed out the current dir, we're back to 0 on the file
@@ -47,7 +47,7 @@ File.foreach('./serviceShot.txt').each do |line|
       (gap-1).times do |i|
         curr_dir = curr_dir + i + 1
         # results = [*results, *extra.map{ |f| "(dir=#{curr_dir}, file=#{f})" }]
-        results = [*results, *extra.map{ |f| nil }]
+        results = [*results, *extra.map{ |f| [nil, nil] }]
       end
     end
 
@@ -56,7 +56,7 @@ File.foreach('./serviceShot.txt').each do |line|
     if gap > 1
       extra = ((curr_file)...next_file).to_a
       # results = [*results, *extra.map{ |f| "(dir=#{curr_dir + 1}, file=#{f})" }]
-      results = [*results, *extra.map{ |f| nil }]
+      results = [*results, *extra.map{ |f| [nil, nil] }]
     end
   elsif next_dir == curr_dir
     gap = next_file - curr_file 
@@ -64,7 +64,7 @@ File.foreach('./serviceShot.txt').each do |line|
     if gap > 1
       extra = ((curr_file+1)...next_file).to_a
       # results = [*results, *extra.map{ |f| "(dir=#{curr_dir}, file=#{f})" }]
-      results = [*results, *extra.map{ |f| nil }]
+      results = [*results, *extra.map{ |f| [nil, nil] }]
     end
   else
     raise Exception.new('not expected')
@@ -73,12 +73,13 @@ File.foreach('./serviceShot.txt').each do |line|
   curr_dir  = next_dir
 
   # Process item
+  betting_state  = line.split(',')[2]
   service_result = line.split(',')[7]
-  if service_result == ''
-    item = nil
-  else
-    item = service_result
-  end
+
+  item = [
+    betting_state == '' ? nil : betting_state,
+    service_result == '' ? nil : service_result
+  ]
 
   results << item
 end
