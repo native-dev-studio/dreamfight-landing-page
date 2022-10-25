@@ -1,7 +1,7 @@
 import { Observable, Subject } from "rxjs";
 import { distinctUntilChanged, map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
-import { generatePlayheadIndex } from './mockUtils';
+import { generatePlayheadIndex } from '../lib/mock';
 import serviceEvents from '../data/serviceShot.json';
 import { BetStatus, ServiceOutcome, BetTransitions } from '../types';
 

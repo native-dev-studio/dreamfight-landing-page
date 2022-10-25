@@ -1,7 +1,7 @@
 import { Observable, Subject } from "rxjs";
 import { map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
-import { generatePlayheadIndex } from './mockUtils';
+import { generatePlayheadIndex } from '../lib/mock';
 import { Coordinates } from '../types';
 import tennisBallPositions from '../data/tennisBall.json';
 

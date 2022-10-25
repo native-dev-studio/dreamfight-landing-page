@@ -24,21 +24,23 @@ const VIDEO = {
   fps: 15,
 };
 
-const videoFeed$ = VideoSubject(VIDEO);
+let videoFeed$ = new Rx.Subject<ImageData>();
 const videoPlayPauseIntents$ = new Rx.Subject();
 const betSelection$ = new Rx.Subject<BetOption>();
-const bettingWindows$ = _(
-  videoFeed$,
-  detectServiceEvents$,
-  Rx.tap(console.log),
-  Rx.filter(betTransition => betTransition.status == BetStatus.Open)
-);
+let bettingWindows$: Rx.Observable<BetTransitions> = Rx.NEVER;
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
   React.useEffect(() => {
     const app = new Pixi.Application(VIDEO);
+    videoFeed$ = VideoSubject(VIDEO);
+    bettingWindows$ = _(
+      videoFeed$,
+      detectServiceEvents$,
+      Rx.tap(console.log),
+      Rx.filter(betTransition => betTransition.status == BetStatus.Open)
+    );
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");

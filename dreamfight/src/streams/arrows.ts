@@ -1,7 +1,7 @@
 import { merge, fromEvent } from "rxjs";
 import { scan, map, tap, filter, startWith } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
-import { clamp } from "../pages/utils";
+import { clamp } from "../lib/utils";
 
 export function getArrows$() {
   return _(
