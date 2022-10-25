@@ -17,9 +17,12 @@ export function Bet(props: BetProps) {
           marginBottom: 24,
           textAlign: "center",
           display: "block",
+          fontFamily: "Helvetica Neue",
+          fontWeight: 200,
         }}
       >
-        Service Shot ({props.duration / 1000}s)
+        Service Shot
+        {/* ({props.duration / 1000}s) */}
       </span>
 
       {props.options.map((s) => (
@@ -38,8 +41,10 @@ export function Bet(props: BetProps) {
             marginBottom: 16,
             borderColor: "rgba(255, 255, 255, 0.3)",
             borderWidth: 1,
-            background:
-              "linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05))",
+            background: `linear-gradient(
+              rgba(255, 255, 255, 0.4),
+              rgba(255, 255, 255, 0.05)
+            )`,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",

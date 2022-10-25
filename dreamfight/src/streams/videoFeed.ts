@@ -1,14 +1,18 @@
-import * as Observable from "rxjs";
+import * as Rx from "rxjs";
 import Hls from "hls.js";
 
 type VideoFeedProps = {
-  src: string,
-  width: number,
-  height: number,
-}
+  src: string;
+  width: number;
+  height: number;
+};
 
-export const VideoSubject = ({ src, width, height }: VideoFeedProps): Observable.Subject<ImageData> => {
-  const subject = new Observable.Subject<ImageData>();
+export const getVideoFeed$ = ({
+  src,
+  width,
+  height,
+}: VideoFeedProps): Rx.Observable<ImageData> => {
+  const subject = new Rx.Subject<ImageData>();
   const hls = new Hls({ ...Hls.DefaultConfig, ...{ autoStartLoad: true } });
   const video = document.createElement("video");
   video.muted = true;

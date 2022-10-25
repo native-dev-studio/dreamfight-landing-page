@@ -1,11 +1,32 @@
 import * as React from "react";
 import ease, { presets } from "rx-ease";
-import { tap, withLatestFrom, of, fromEvent, timer, concat, Observable, Subject } from "rxjs";
-import { filter, map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
+import {
+  withLatestFrom,
+  of,
+  timer,
+  concat,
+  Observable,
+  Subject,
+  race,
+} from "rxjs";
+import {
+  filter,
+  map,
+  takeUntil,
+  concatMap,
+  windowToggle,
+  switchAll,
+  scan,
+} from "rxjs/operators";
 import { Bet } from "../components/Bet";
-import { BetStatus, BetTransitions, BetOption, ServiceOutcome } from "../types";
-import { IDS } from "../constants";
+import {
+  BetStatus,
+  BetTransitions,
+  BetOption,
+  ServiceOutcome,
+  Fighter,
+} from "../types";
 import { TextEffect } from "../components/TextEffect";
 
 type ServiceShot = {
@@ -24,93 +45,105 @@ const STUB_SERVICE_SHOT: ServiceShot = {
   ],
 };
 
+const UI_RESET = of(null);
+
 export function getBets$(
   source: Observable<BetTransitions>,
-  betSelection$: Subject<BetOption>,
+  betSelection$: Subject<BetOption>
 ): Observable<React.ReactNode> {
-  return _(
-    _(
-      source,
-      filter(betTransition => betTransition.status == BetStatus.Open),
-      map(() => STUB_SERVICE_SHOT)
-    ),
-    exhaustMap((bet) => {
-      const durationTimer$ = timer(bet.durationMS);
+  const betUI$ = _(
+    timer(0, 1000),
+    map((timerIndex) => {
+      const bet = STUB_SERVICE_SHOT;
 
-      return concat(
-        _(
-          timer(0, 1000),
-          map((timerIndex) => (
-            <div style={{ position: "absolute", top: 48, left: 48 }}>
-              <Bet
-                index={timerIndex}
-                duration={bet.durationMS - timerIndex * 1000}
-                options={bet.options}
-                onSelect={(x) => {
-                  betSelection$.next(x);
-                }}
-              />
-            </div>
-          )),
-          takeUntil(betSelection$),
-          takeUntil(durationTimer$),
-        ),
-        of(null) // Reset UI
+      return (
+        <div style={{ position: "absolute", top: 48, left: 48 }}>
+          <Bet
+            index={timerIndex}
+            duration={bet.durationMS - timerIndex * 1000}
+            options={bet.options}
+            onSelect={(x) => {
+              betSelection$.next(x);
+            }}
+          />
+        </div>
       );
     })
+  );
+
+  const betOpen$ = _(
+    source,
+    filter((bet) => bet.status == BetStatus.Open)
+  );
+
+  const betClose$ = () =>
+    race(
+      betSelection$,
+      _(
+        source,
+        filter((bet) => bet.status === BetStatus.Closed)
+      )
+    );
+
+  return _(
+    betUI$,
+    windowToggle(betOpen$, betClose$),
+    map((uiWindow) => concat(uiWindow, UI_RESET)),
+    switchAll()
   );
 }
 
 export function getBetOutcomes$(
-  betSelection$: Subject<BetOption>
+  betSelection$: Observable<BetOption>,
+  betTransitions$: Observable<BetTransitions>
 ): Observable<React.ReactNode> {
   return _(
-    betSelection$,
-    concatMap((bet) => {
+    betTransitions$,
+    filter((transition) => transition.status == BetStatus.Executed),
+    withLatestFrom(betSelection$),
+    concatMap(([executed, selectedBet]) => {
       const durationTimer$ = timer(2000);
 
-      return concat(
-        _(
-          timer(0, 1000),
-          ease(presets.gentle[0], presets.gentle[1]),
-          map((n) => <TextEffect scale={n} bet={bet} />),
-          takeUntil(durationTimer$)
-        ),
-        of(null) // Reset UI
-      );
+      return executed.outcome === selectedBet.guess
+        ? concat(
+            _(
+              timer(0, 1000),
+              ease(presets.gentle[0], presets.gentle[1]),
+              map((n) => <TextEffect scale={n} bet={selectedBet} />),
+              takeUntil(durationTimer$)
+            ),
+            UI_RESET
+          )
+        : UI_RESET;
     })
   );
 }
 
-export function updateFighterScore$(
-  fighterScore$: Subject<number>,
-  betSelection$: Subject<BetOption>,
-  betTransitions: Observable<BetTransitions>,
-) {
+// TODO: -> getGameScore$
+export function getFighterScore$(
+  betSelection$: Observable<BetOption>,
+  betTransitions$: Observable<BetTransitions>
+): Observable<number> {
   return _(
-    betTransitions,
-    filter(betTransition => betTransition.status == BetStatus.Executed),
-    withLatestFrom(betSelection$, fighterScore$),
-    tap(([executed, selectedBet, score]) => {
-      console.log('RESULTS: ', selectedBet, executed, score);
-      if (selectedBet.guess === executed.outcome) {
-        fighterScore$.next(score + 1);
-      }
-    })
+    betTransitions$,
+    filter((betTransition) => betTransition.status == BetStatus.Executed),
+    withLatestFrom(betSelection$),
+    scan((total, [executed, selectedBet]) => {
+      return (
+        total +
+        (selectedBet.guess === executed.outcome ? selectedBet.points : 0)
+      );
+    }, 0)
   );
 }
 
-export function showFighterScore(
-  fighterScore$: Subject<number>,
-) {
+export function showFighterScore$(
+  fighterScore$: Observable<number>
+): Observable<React.ReactNode> {
   return _(
     fighterScore$,
-    map((score) => {
-      return (
-        <h1 style={{ position: 'absolute', top: 0, right: 0 }}>
-          {score}
-        </h1>
-      );
-    })
+    map((score) => (
+      <h1 style={{ position: "absolute", top: 12, right: 12 }}>{score}</h1>
+    ))
   );
 }

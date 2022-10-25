@@ -7,7 +7,9 @@ export function RenderStream(props: {
   const [state, setState] = React.useState<React.ReactNode>(null);
 
   React.useEffect(() => {
-    const subscription = props.with().subscribe(setState);
+    const subscription = props.with().subscribe((v) => {
+      setState(v);
+    });
 
     return () => {
       subscription.unsubscribe();

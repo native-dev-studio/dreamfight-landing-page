@@ -1,17 +1,10 @@
-import { Observable, Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { map, distinctUntilChanged } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
-import { generatePlayheadIndex } from '../lib/mock';
+import { generatePlayheadIndex } from "../lib/mock";
 
 export function detectFrameTimestamp$(
-  imageSource$: Subject<ImageData>
+  imageSource$: Observable<ImageData>
 ): Observable<number> {
-  return _(
-    imageSource$,
-    map((imdata: ImageData) => {
-      const playheadIndex = generatePlayheadIndex(imdata);
-      return playheadIndex;
-    }),
-    distinctUntilChanged((prev, curr) => prev === curr),
-  )
+  return _(imageSource$, map(generatePlayheadIndex), distinctUntilChanged());
 }

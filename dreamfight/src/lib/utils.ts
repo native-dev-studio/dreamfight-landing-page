@@ -5,3 +5,7 @@ export function clamp(
 ) {
   return Math.max(min, Math.min(max, val));
 }
+
+export function log(label: string): (value: any) => void {
+  return (value) => console.log(`${label}:`, value);
+}
