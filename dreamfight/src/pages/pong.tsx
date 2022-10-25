@@ -31,6 +31,8 @@ let bettingWindows$: Rx.Observable<BetTransitions> = Rx.NEVER;
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
+  const [state, setState] = React.useState<React.ReactNode>(null);
+  const [state2, setState2] = React.useState<React.ReactNode>(null);
 
   React.useEffect(() => {
     const app = new Pixi.Application(VIDEO);
@@ -41,6 +43,10 @@ const PongPage = () => {
       Rx.tap(console.log),
       Rx.filter(betTransition => betTransition.status == BetStatus.Open)
     );
+    const getBetsUI = getBets$(bettingWindows$, betSelection$);
+    const getBetsUISub = getBetsUI.subscribe(setState);
+    const getBetsOutcomeUI = getBetOutcomes$(betSelection$);
+    const getBetsOutcomeUISub = getBetsOutcomeUI.subscribe(setState2);
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -88,6 +94,7 @@ const PongPage = () => {
 
     return () => {
       app.stage.removeChildren();
+      getBetsUISub.unsubscribe();
     };
   }, []);
 
@@ -127,8 +134,8 @@ const PongPage = () => {
           />
         </div>
 
-        <RenderStream with={() => getBets$(bettingWindows$, betSelection$)} />
-        <RenderStream with={() => getBetOutcomes$(betSelection$)} />
+        {state}
+        {state2}
 
         {/* <button id={IDS.betButton}>Bet</button> */}
 
