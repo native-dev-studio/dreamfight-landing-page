@@ -12,7 +12,7 @@ export function detectTennisBall$(
     imageSource$,
     map((imdata: ImageData) => {
       const playheadIndex = generatePlayheadIndex(imdata);
-      const maybeCoords = tennisBallPositions[playheadIndex] as MaybeCoordinates;
+      const maybeCoords = tennisBallPositions[playheadIndex] as Coordinates;
       return maybeCoords;
     })
   )
