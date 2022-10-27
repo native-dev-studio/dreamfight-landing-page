@@ -11,7 +11,7 @@ import { IDS } from "../constants";
 import { VideoSubject } from "../streams/videoFeed";
 import { detectTennisBall$ } from "../streams/detectTennisBall";
 import { detectServiceEvents$ } from "../streams/detectServiceEvent";
-import { getBetOutcomes$, getBets$ } from "../streams/bets";
+import { getBetOutcomes$, getBets$, updateFighterScore$, showFighterScore as showFighterScore$ } from "../streams/bets";
 import { BetStatus, BetTransitions, Coordinates, BetOption } from "../types";
 import { doPlayState$ } from "../streams/playState";
 import {between} from "fp-ts/lib/Ord";
@@ -27,12 +27,12 @@ const VIDEO = {
 let videoFeed$ = new Rx.Subject<ImageData>();
 const videoPlayPauseIntents$ = new Rx.Subject();
 const betSelection$ = new Rx.Subject<BetOption>();
+const fighterScore$ = new Rx.BehaviorSubject(0);
 let bettingWindows$: Rx.Observable<BetTransitions> = Rx.NEVER;
 
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [state, setState] = React.useState<React.ReactNode>(null);
-  const [state2, setState2] = React.useState<React.ReactNode>(null);
 
   React.useEffect(() => {
     const app = new Pixi.Application(VIDEO);
@@ -41,12 +41,10 @@ const PongPage = () => {
       videoFeed$,
       detectServiceEvents$,
       Rx.tap(console.log),
-      Rx.filter(betTransition => betTransition.status == BetStatus.Open)
     );
     const getBetsUI = getBets$(bettingWindows$, betSelection$);
     const getBetsUISub = getBetsUI.subscribe(setState);
     const getBetsOutcomeUI = getBetOutcomes$(betSelection$);
-    const getBetsOutcomeUISub = getBetsOutcomeUI.subscribe(setState2);
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -89,6 +87,9 @@ const PongPage = () => {
       tennis.width      = w * VIDEO.width;
       tennis.height     = h * VIDEO.height;
     });
+
+    /// Takes stream of bet selections and transitions, updates score
+    updateFighterScore$(fighterScore$, betSelection$, bettingWindows$).subscribe(console.log);
 
     doPlayState$(videoPlayPauseIntents$).subscribe(console.log);
 
@@ -135,7 +136,7 @@ const PongPage = () => {
         </div>
 
         {state}
-        {state2}
+        <RenderStream with={() => showFighterScore$(fighterScore$)} />
 
         {/* <button id={IDS.betButton}>Bet</button> */}
 

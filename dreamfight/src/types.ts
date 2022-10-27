@@ -3,6 +3,7 @@ export type VideoPlayState = "playing" | "paused";
 export type BetOption = {
   label: string;
   points: number;
+  guess: ServiceOutcome;
 };
 
 export enum BetStatus {
