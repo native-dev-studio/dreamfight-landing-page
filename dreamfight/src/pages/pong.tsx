@@ -11,6 +11,8 @@ import { IDS } from "../constants";
 import { VideoSubject } from "../streams/videoFeed";
 import { detectTennisBall$ } from "../streams/detectTennisBall";
 import { detectServiceEvents$ } from "../streams/detectServiceEvent";
+import { detectFrameTimestamp$ } from "../streams/detectFrameTimestamp";
+import { showFrameTimestamp$ } from "../streams/showFrameTimestamp"
 import { getBetOutcomes$, getBets$, updateFighterScore$, showFighterScore as showFighterScore$ } from "../streams/bets";
 import { BetStatus, BetTransitions, Coordinates, BetOption } from "../types";
 import { doPlayState$ } from "../streams/playState";
@@ -29,10 +31,13 @@ const videoPlayPauseIntents$ = new Rx.Subject();
 const betSelection$ = new Rx.Subject<BetOption>();
 const fighterScore$ = new Rx.BehaviorSubject(0);
 let bettingWindows$: Rx.Observable<BetTransitions> = Rx.NEVER;
-
+let frameTimestamps$: Rx.Observable<number> = Rx.NEVER;
+  
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [state, setState] = React.useState<React.ReactNode>(null);
+  const [state2, setState2] = React.useState<React.ReactNode>(null);
+  const [state3, setState3] = React.useState<React.ReactNode>(null);
 
   React.useEffect(() => {
     const app = new Pixi.Application(VIDEO);
@@ -42,9 +47,16 @@ const PongPage = () => {
       detectServiceEvents$,
       Rx.tap(console.log),
     );
+    frameTimestamps$ = _(
+      videoFeed$,
+      detectFrameTimestamp$,
+    )
     const getBetsUI = getBets$(bettingWindows$, betSelection$);
     const getBetsUISub = getBetsUI.subscribe(setState);
     const getBetsOutcomeUI = getBetOutcomes$(betSelection$);
+    const getBetsOutcomeUISub = getBetsOutcomeUI.subscribe(setState2);
+    const getFrameTimestampUI = showFrameTimestamp$(frameTimestamps$);
+    const getFrameTimestampSub = getFrameTimestampUI.subscribe(setState3);
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -96,87 +108,92 @@ const PongPage = () => {
     return () => {
       app.stage.removeChildren();
       getBetsUISub.unsubscribe();
+      getFrameTimestampSub.unsubscribe();
+      getBetsOutcomeUISub.unsubscribe();
     };
   }, []);
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <>
       <div
         style={{
-          width: VIDEO.width,
-          height: VIDEO.height,
-          position: "relative",
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <div
-          id="broadcast"
           style={{
             width: VIDEO.width,
             height: VIDEO.height,
+            position: "relative",
           }}
         >
-          <video
-            ref={videoRef}
-            autoPlay
-            controls
-            muted
+          <div
+            id="broadcast"
             style={{
-              display: "none",
-              position: "absolute",
+              width: VIDEO.width,
+              height: VIDEO.height,
             }}
-          />
+          >
+            <video
+              ref={videoRef}
+              autoPlay
+              controls
+              muted
+              style={{
+                display: "none",
+                position: "absolute",
+              }}
+            />
+          </div>
+          {state3}
+          {state}
+          {state2}
+          <RenderStream with={() => showFighterScore$(fighterScore$)} />
+
+          {/* <button id={IDS.betButton}>Bet</button> */}
+
+          {/* <div
+              id={IDS.videoOverlay}
+              style={{
+display: "none",
+background: "rgba(0, 0, 0, 0.3)",
+top: 0,
+right: 0,
+bottom: 0,
+left: 0,
+position: "absolute",
+}}
+>
+<button
+id={IDS.playPauseButton}
+style={{
+position: "absolute",
+background: "#FFF",
+borderRadius: 80,
+width: 80,
+height: 80,
+top: "50%",
+marginTop: -40,
+left: "50%",
+marginLeft: -40,
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+}}
+onClick={() => {
+videoPlayPauseIntents$.next(void 0);
+}}
+>
+<img src={playIcon} alt="" />
+</button>
+</div> */}
         </div>
-
-        {state}
-        <RenderStream with={() => showFighterScore$(fighterScore$)} />
-
-        {/* <button id={IDS.betButton}>Bet</button> */}
-
-        {/* <div
-        id={IDS.videoOverlay}
-        style={{
-          display: "none",
-          background: "rgba(0, 0, 0, 0.3)",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          position: "absolute",
-        }}
-      >
-        <button
-          id={IDS.playPauseButton}
-          style={{
-            position: "absolute",
-            background: "#FFF",
-            borderRadius: 80,
-            width: 80,
-            height: 80,
-            top: "50%",
-            marginTop: -40,
-            left: "50%",
-            marginLeft: -40,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={() => {
-            videoPlayPauseIntents$.next(void 0);
-          }}
-        >
-          <img src={playIcon} alt="" />
-        </button>
-      </div> */}
       </div>
-    </div>
+    </>
   );
 };
 
