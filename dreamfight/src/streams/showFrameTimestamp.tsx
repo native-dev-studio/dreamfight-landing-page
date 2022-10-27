@@ -10,7 +10,7 @@ export function showFrameTimestamp$(
     source,
     map(ts => {
       return (
-        <aside className='text-lg'>
+        <aside style={{ position: 'absolute', top: 0, left: 0 }} className='text-lg'>
           Frame timestamp: {ts}
         </aside>
       )

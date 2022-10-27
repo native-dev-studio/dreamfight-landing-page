@@ -112,7 +112,6 @@ const PongPage = () => {
 
   return (
     <>
-      {state3}
       <div
         style={{
           height: "100vh",
@@ -147,6 +146,7 @@ const PongPage = () => {
               }}
             />
           </div>
+          {state3}
           {state}
           {state2}
         </div>
