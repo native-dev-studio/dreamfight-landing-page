@@ -13,7 +13,7 @@ import { detectTennisBall$ } from "../streams/detectTennisBall";
 import { detectServiceEvents$ } from "../streams/detectServiceEvent";
 import { detectFrameTimestamp$ } from "../streams/detectFrameTimestamp";
 import { showFrameTimestamp$ } from "../streams/showFrameTimestamp"
-import { getBetOutcomes$, getBets$ } from "../streams/bets";
+import { getBetOutcomes$, getBets$, updateFighterScore$, showFighterScore as showFighterScore$ } from "../streams/bets";
 import { BetStatus, BetTransitions, Coordinates, BetOption } from "../types";
 import { doPlayState$ } from "../streams/playState";
 import {between} from "fp-ts/lib/Ord";
@@ -29,6 +29,7 @@ const VIDEO = {
 let videoFeed$ = new Rx.Subject<ImageData>();
 const videoPlayPauseIntents$ = new Rx.Subject();
 const betSelection$ = new Rx.Subject<BetOption>();
+const fighterScore$ = new Rx.BehaviorSubject(0);
 let bettingWindows$: Rx.Observable<BetTransitions> = Rx.NEVER;
 let frameTimestamps$: Rx.Observable<number> = Rx.NEVER;
   
@@ -45,7 +46,6 @@ const PongPage = () => {
       videoFeed$,
       detectServiceEvents$,
       Rx.tap(console.log),
-      Rx.filter(betTransition => betTransition.status == BetStatus.Open)
     );
     frameTimestamps$ = _(
       videoFeed$,
@@ -100,6 +100,9 @@ const PongPage = () => {
       tennis.height     = h * VIDEO.height;
     });
 
+    /// Takes stream of bet selections and transitions, updates score
+    updateFighterScore$(fighterScore$, betSelection$, bettingWindows$).subscribe(console.log);
+
     doPlayState$(videoPlayPauseIntents$).subscribe(console.log);
 
     return () => {
@@ -149,6 +152,45 @@ const PongPage = () => {
           {state3}
           {state}
           {state2}
+          <RenderStream with={() => showFighterScore$(fighterScore$)} />
+
+          {/* <button id={IDS.betButton}>Bet</button> */}
+
+          {/* <div
+              id={IDS.videoOverlay}
+              style={{
+display: "none",
+background: "rgba(0, 0, 0, 0.3)",
+top: 0,
+right: 0,
+bottom: 0,
+left: 0,
+position: "absolute",
+}}
+>
+<button
+id={IDS.playPauseButton}
+style={{
+position: "absolute",
+background: "#FFF",
+borderRadius: 80,
+width: 80,
+height: 80,
+top: "50%",
+marginTop: -40,
+left: "50%",
+marginLeft: -40,
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+}}
+onClick={() => {
+videoPlayPauseIntents$.next(void 0);
+}}
+>
+<img src={playIcon} alt="" />
+</button>
+</div> */}
         </div>
       </div>
     </>

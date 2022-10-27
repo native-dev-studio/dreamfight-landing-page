@@ -1,10 +1,10 @@
 import * as React from "react";
 import ease, { presets } from "rx-ease";
-import { of, fromEvent, timer, concat, Observable, Subject } from "rxjs";
+import { tap, withLatestFrom, of, fromEvent, timer, concat, Observable, Subject } from "rxjs";
 import { filter, map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
 import { Bet } from "../components/Bet";
-import { BetStatus, BetTransitions, BetOption } from "../types";
+import { BetStatus, BetTransitions, BetOption, ServiceOutcome } from "../types";
 import { IDS } from "../constants";
 import { TextEffect } from "../components/TextEffect";
 
@@ -18,9 +18,9 @@ const STUB_SERVICE_SHOT: ServiceShot = {
   type: "serviceShot",
   durationMS: 4_000,
   options: [
-    { label: "Ace", points: 20 },
-    { label: "In", points: 5 },
-    { label: "Fault", points: 2 },
+    { label: "Ace", points: 20, guess: ServiceOutcome.Ace },
+    { label: "In", points: 5, guess: ServiceOutcome.ServerWon },
+    { label: "Fault", points: 2, guess: ServiceOutcome.DoubleFault }, // do we not have a fault option??
   ],
 };
 
@@ -77,6 +77,39 @@ export function getBetOutcomes$(
           takeUntil(durationTimer$)
         ),
         of(null) // Reset UI
+      );
+    })
+  );
+}
+
+export function updateFighterScore$(
+  fighterScore$: Subject<number>,
+  betSelection$: Subject<BetOption>,
+  betTransitions: Observable<BetTransitions>,
+) {
+  return _(
+    betTransitions,
+    filter(betTransition => betTransition.status == BetStatus.Executed),
+    withLatestFrom(betSelection$, fighterScore$),
+    tap(([executed, selectedBet, score]) => {
+      console.log('RESULTS: ', selectedBet, executed, score);
+      if (selectedBet.guess === executed.outcome) {
+        fighterScore$.next(score + 1);
+      }
+    })
+  );
+}
+
+export function showFighterScore(
+  fighterScore$: Subject<number>,
+) {
+  return _(
+    fighterScore$,
+    map((score) => {
+      return (
+        <h1 style={{ position: 'absolute', top: 0, right: 0 }}>
+          {score}
+        </h1>
       );
     })
   );
