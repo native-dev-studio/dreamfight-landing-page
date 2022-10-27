@@ -19,7 +19,7 @@
     "@tensorflow-models/coco-ssd": "^2.2.2",
     "@tensorflow/tfjs": "^3.20.0",
     "fp-ts": "^2.13.1",
-    "gatsby": "^4.14.0",
+    "gatsby": "^4.24.5",
     "gatsby-background-image": "^1.6.0",
     "gatsby-plugin-image": "^2.14.1",
     "gatsby-plugin-manifest": "^4.14.0",
