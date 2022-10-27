@@ -1,6 +1,6 @@
 import * as React from "react";
 import ease, { presets } from "rx-ease";
-import { of, fromEvent, timer, concat, Observable, Subject } from "rxjs";
+import { tap, withLatestFrom, of, fromEvent, timer, concat, Observable, Subject } from "rxjs";
 import { filter, map, exhaustMap, takeUntil, concatMap } from "rxjs/operators";
 import { pipe as _ } from "fp-ts/lib/function";
 import { Bet } from "../components/Bet";
@@ -77,6 +77,37 @@ export function getBetOutcomes$(
           takeUntil(durationTimer$)
         ),
         of(null) // Reset UI
+      );
+    })
+  );
+}
+
+export function updateFighterScore$(
+  fighterScore$: Subject<number>,
+  betSelection$: Subject<BetOption>,
+  betTransitions: Observable<BetTransitions>,
+) {
+  return _(
+    betTransitions,
+    filter(betTransition => betTransition.status == BetStatus.Executed),
+    withLatestFrom(betSelection$, fighterScore$),
+    tap(([executed, selectedBet, score]) => {
+      console.log('RESULTS: ', selectedBet, executed, score);
+      fighterScore$.next(score + 1);
+    })
+  );
+}
+
+export function showFighterScore(
+  fighterScore$: Subject<number>,
+) {
+  return _(
+    fighterScore$,
+    map((score) => {
+      return (
+        <h1 style={{ position: 'absolute', top: 0, right: 0 }}>
+          {score}
+        </h1>
       );
     })
   );
