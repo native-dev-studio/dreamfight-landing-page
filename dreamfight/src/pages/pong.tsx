@@ -106,6 +106,7 @@ const PongPage = () => {
       app.stage.removeChildren();
       getBetsUISub.unsubscribe();
       getFrameTimestampSub.unsubscribe();
+      getBetsOutcomeUISub.unsubscribe();
     };
   }, []);
 
