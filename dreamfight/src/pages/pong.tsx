@@ -11,6 +11,7 @@ import { IDS } from "../constants";
 import { VideoSubject } from "../streams/videoFeed";
 import { detectTennisBall$ } from "../streams/detectTennisBall";
 import { detectServiceEvents$ } from "../streams/detectServiceEvent";
+import { detectFrameTimestamp$ } from "../streams/detectFrameTimestamp";
 import { getBetOutcomes$, getBets$ } from "../streams/bets";
 import { BetStatus, BetTransitions, Coordinates, BetOption } from "../types";
 import { doPlayState$ } from "../streams/playState";
@@ -76,6 +77,11 @@ const PongPage = () => {
 
     _(
       videoFeed$,
+      detectFrameTimestamp$,
+    ).subscribe(console.log);
+
+    _(
+      videoFeed$,
       detectTennisBall$,
     ).subscribe((maybeCoords: Coordinates | null) => {
       if (maybeCoords === null) {
@@ -99,83 +105,49 @@ const PongPage = () => {
   }, []);
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <>
+      <aside className='text-lg'>
+        Frame timestamp: 5990
+      </aside>
       <div
         style={{
-          width: VIDEO.width,
-          height: VIDEO.height,
-          position: "relative",
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <div
-          id="broadcast"
           style={{
             width: VIDEO.width,
             height: VIDEO.height,
+            position: "relative",
           }}
         >
-          <video
-            ref={videoRef}
-            autoPlay
-            controls
-            muted
+          <div
+            id="broadcast"
             style={{
-              display: "none",
-              position: "absolute",
+              width: VIDEO.width,
+              height: VIDEO.height,
             }}
-          />
+          >
+            <video
+              ref={videoRef}
+              autoPlay
+              controls
+              muted
+              style={{
+                display: "none",
+                position: "absolute",
+              }}
+            />
+          </div>
+          {state}
+          {state2}
         </div>
-
-        {state}
-        {state2}
-
-        {/* <button id={IDS.betButton}>Bet</button> */}
-
-        {/* <div
-        id={IDS.videoOverlay}
-        style={{
-          display: "none",
-          background: "rgba(0, 0, 0, 0.3)",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          position: "absolute",
-        }}
-      >
-        <button
-          id={IDS.playPauseButton}
-          style={{
-            position: "absolute",
-            background: "#FFF",
-            borderRadius: 80,
-            width: 80,
-            height: 80,
-            top: "50%",
-            marginTop: -40,
-            left: "50%",
-            marginLeft: -40,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={() => {
-            videoPlayPauseIntents$.next(void 0);
-          }}
-        >
-          <img src={playIcon} alt="" />
-        </button>
-      </div> */}
       </div>
-    </div>
+    </>
   );
 };
 
