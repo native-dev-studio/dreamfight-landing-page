@@ -12,6 +12,7 @@ import { VideoSubject } from "../streams/videoFeed";
 import { detectTennisBall$ } from "../streams/detectTennisBall";
 import { detectServiceEvents$ } from "../streams/detectServiceEvent";
 import { detectFrameTimestamp$ } from "../streams/detectFrameTimestamp";
+import { showFrameTimestamp$ } from "../streams/showFrameTimestamp"
 import { getBetOutcomes$, getBets$ } from "../streams/bets";
 import { BetStatus, BetTransitions, Coordinates, BetOption } from "../types";
 import { doPlayState$ } from "../streams/playState";
@@ -29,11 +30,13 @@ let videoFeed$ = new Rx.Subject<ImageData>();
 const videoPlayPauseIntents$ = new Rx.Subject();
 const betSelection$ = new Rx.Subject<BetOption>();
 let bettingWindows$: Rx.Observable<BetTransitions> = Rx.NEVER;
-
+let frameTimestamps$: Rx.Observable<number> = Rx.NEVER;
+  
 const PongPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [state, setState] = React.useState<React.ReactNode>(null);
   const [state2, setState2] = React.useState<React.ReactNode>(null);
+  const [state3, setState3] = React.useState<React.ReactNode>(null);
 
   React.useEffect(() => {
     const app = new Pixi.Application(VIDEO);
@@ -44,10 +47,16 @@ const PongPage = () => {
       Rx.tap(console.log),
       Rx.filter(betTransition => betTransition.status == BetStatus.Open)
     );
+    frameTimestamps$ = _(
+      videoFeed$,
+      detectFrameTimestamp$,
+    )
     const getBetsUI = getBets$(bettingWindows$, betSelection$);
     const getBetsUISub = getBetsUI.subscribe(setState);
     const getBetsOutcomeUI = getBetOutcomes$(betSelection$);
     const getBetsOutcomeUISub = getBetsOutcomeUI.subscribe(setState2);
+    const getFrameTimestampUI = showFrameTimestamp$(frameTimestamps$);
+    const getFrameTimestampSub = getFrameTimestampUI.subscribe(setState3);
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -77,11 +86,6 @@ const PongPage = () => {
 
     _(
       videoFeed$,
-      detectFrameTimestamp$,
-    ).subscribe(console.log);
-
-    _(
-      videoFeed$,
       detectTennisBall$,
     ).subscribe((maybeCoords: Coordinates | null) => {
       if (maybeCoords === null) {
@@ -101,14 +105,13 @@ const PongPage = () => {
     return () => {
       app.stage.removeChildren();
       getBetsUISub.unsubscribe();
+      getFrameTimestampSub.unsubscribe();
     };
   }, []);
 
   return (
     <>
-      <aside className='text-lg'>
-        Frame timestamp: 5990
-      </aside>
+      {state3}
       <div
         style={{
           height: "100vh",
