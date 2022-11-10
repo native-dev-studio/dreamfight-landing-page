@@ -4,9 +4,10 @@
 
 @layer base {
   body {
-    @apply bg-black text-white
+    @apply bg-black text-white;
+    -webkit-font-smoothing: antialiased;
   }
-  
+
   h1 {
     @apply text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl;
   }
@@ -14,4 +15,140 @@
   p {
     @apply text-lg sm:text-base md:text-xl;
   }
+
+  .title {
+    color: #FFFFFF;
+
+    font-family: 'League Gothic';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 130px;
+    line-height: 130%;
+    letter-spacing: -0.02em;
+  }
+
+  .content {
+    color: #FFFFFF;
+
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 130%;
+    letter-spacing: 0.02em;
+  }
+
+  /* h2 */
+  .subtitle {
+    color: #FFFFFF;
+    font-family: 'League Gothic';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 70px;
+    line-height: 242%;
+    letter-spacing: -0.02em;
+  }
 }
+
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.gradient-text {
+  background: #FFF;
+  background-image: linear-gradient(60.08deg, #29DCE5 28.95%, #FFA0DF 30.79%, #FFDCDD 33.68%, #FEFBCE 39.94%, #FCFFF8 57.22%, #EBF6F2 62.37%, #01DCEB 75.64%, #0391EA 78.36%, #FE94D0 80.13%, #FAFAC6 81.56%, #FAA6E2 91.28%, #E9F5F1 104.22%, #FAFAF2 124.43%, #EBF6F2 126.77%, #9A9AEF 130.59%), linear-gradient(0deg, #FFFFFF, #FFFFFF);
+  background-size: 300%;
+  background-position-x: -150px;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+}
+
+.logo {
+  display: block;
+  margin-top: 108px;
+  margin-bottom: 240px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.fightpass-video {
+  margin-right: 108px;
+  width: 50%;
+}
+
+.footer {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 96px;
+  padding-bottom: 36px;
+  width: 100%;
+}
+
+.footer-badge {
+  display: block;
+  margin-right: 24px;
+  width: 44px;
+}
+
+/* Mailchimp */
+
+.email-form {
+  margin-top: 36px;
+}
+
+#mc_embed_signup_scroll {
+  display: flex; flex-wrap: wrap;
+}
+
+.mc-field-group {
+  flex-grow: 1;
+}
+
+.mc-field-group label {
+  cursor: pointer;
+  display: block;
+  font-family: Manrope;
+  font-size: 24px;
+  font-weight: 700;
+  flex-basis: 100%;
+  margin-bottom: 12px;
+}
+
+.mc-field-with-button {
+  display: flex;
+  flex-direction: row;
+}
+
+input#mce-EMAIL {
+  background: #1B1B1B;
+  width: 100%;
+  padding-left: 24px;
+  height: 70px;
+  border-radius: 9px 0 0 9px;
+
+  font-family: 'Manrope';
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 27px;
+  color: #FFFFFF;
+}
+
+input#mce-EMAIL::placeholder {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+input#mc-embedded-subscribe {
+  background: linear-gradient(288.13deg, rgba(41, 220, 229, 0.4) -84.58%, rgba(255, 160, 223, 0.4) -81.48%, rgba(255, 220, 221, 0.4) -76.6%, rgba(254, 251, 206, 0.4) -66.04%, rgba(252, 255, 248, 0.4) -36.92%, rgba(235, 246, 242, 0.4) -28.25%, rgba(1, 220, 235, 0.4) -5.86%, rgba(3, 145, 234, 0.4) -1.28%, rgba(254, 148, 208, 0.4) 1.69%, rgba(250, 250, 198, 0.4) 4.12%, rgba(250, 166, 226, 0.4) 20.5%, rgba(233, 245, 241, 0.4) 42.3%, rgba(250, 250, 242, 0.4) 76.37%, rgba(235, 246, 242, 0.4) 80.31%, rgba(154, 154, 239, 0.4) 86.75%), #FFFFFF;
+  color: #000;
+  padding: 0 24px;
+  font-weight: 700;
+  height: 70px;
+  border-radius: 0 9px 9px 0;
+  cursor: pointer;
+}
+

@@ -1,63 +1,117 @@
-import * as React from "react"
+import * as React from "react";
 
-import { Link } from 'gatsby';
-import DreamFightLogo from '../components/DreamFightLogo';
-import HeroImage from '../components/HeroImage';
-import { graphql, useStaticQuery } from 'gatsby';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
+import logo from "../images/logo@2x.png";
+import fightpassVideoSrc from "../images/fightpass.mp4";
+import badgeSrc from "../images/badge.png";
+import bgSrc from "../images/bg.webp";
+import tennisStarSrc from "../images/tennis-star.webp";
+import { EmailForm } from "../components/EmailForm";
 
 const IndexPage = () => {
-  return (
-    <section className="
-      flex flex-col justify-center items-center 
-      md:flex-row md:items-start
-    ">
-      <main className="max-w-lg mb-10 px-10">
-        <DreamFightLogo className='my-5'/>
-        <h1 className="
-          mt-4 sm:mt-8 2xl:mt-16 
-          mb-8 
-          italic tracking-tight font-extrabold
-        ">
-          Get in the game
-        </h1>
-        <p className="
-          my-3 sm:mt-5 md:mt-5 lg:mx-0
-        ">
-          DreamFight is a new type of sports game augmented over live broadcast. We're bringing back the magic of sports and gaming.
-        </p>
-        <div className="mt-5 sm:mt-8 sm:flex sm:justify-center justify-start">
-          <div className="w-full">
-            <div className='
-              text-lg
-              my-3 font-semibold
-            '>
-              Sign up for early access
-            </div>
-            <div className='flex flex-col sm:flex-row sm:space-x-4 w-3xl font-large'>
-              <input type="text" 
-                className="
-                  py-3 mb-3 text-black sm:mb-0 focus:ring-red focus:border-red flex-1 block w-full rounded text-lg px-3
-                "
-                placeholder="Enter your email"
-              />
-              { /* @ts-ignore */}
-              <Link to='#' className='
-                px-8 py-3 whitespace-nowrap bg-purple rounded
-                text-lg sm:text-md'
-              >
-                Sign up
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className='mt-5 sm:mt-10 text-gray-600 italic text-sm'>
-          © 2022 DreamFight Inc. All rights reserved.
-        </div>
-      </main>
-      <HeroImage className="max-w-full sm:max-w-[40%] h-screen" />
-    </section>
-  )
-}
+  const videoRef = React.useRef<HTMLVideoElement>(null);
 
-export default IndexPage
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play();
+      }
+    }, 10_000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  return (
+    <main
+      style={{
+        background: `url(${bgSrc}) no-repeat center`,
+        backgroundSize: "contain",
+        backgroundPositionY: -90,
+        width: "100%",
+      }}
+    >
+      <div className="container">
+        <section
+          style={{
+            width: "50%",
+            padding: "0 36px",
+          }}
+        >
+          <img src={logo} width="500px" className="logo" />
+
+          <div style={{}}>
+            <h1 className="title">
+              Get in the g<span className="gradient-text">ame</span>
+            </h1>
+
+            <p className="content">
+              We're building a revolutionary experience that incorporates fan
+              favorite elements of fantasy, speculation, and competitive gaming
+              into a thrilling game augmented over live broadcast.
+            </p>
+          </div>
+        </section>
+
+        <section
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            marginTop: 160,
+            padding: "0 36px",
+            alignItems: "top",
+            justifyContent: "center",
+          }}
+        >
+          <video
+            ref={videoRef}
+            controls={false}
+            autoPlay
+            loop={false}
+            muted
+            className="fightpass-video"
+            // @note Disable right clicking on the video and showing controls
+            onContextMenu={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <source src={fightpassVideoSrc} type="video/mp4" />
+          </video>
+
+          <div style={{ width: "50%" }}>
+            <h2 className="subtitle">Get your fight pass</h2>
+            <p className="content">
+              Sign up to mint your early access NFT and play the first ever
+              DreamFight game! We’ll be hosting fight nights and inviting our
+              ticket holders to test our upcoming alpha.
+            </p>
+
+            <EmailForm />
+          </div>
+        </section>
+
+        <footer className="footer">
+          <img src={badgeSrc} alt="DF badge" className="footer-badge" />
+          <p className="content">© 2022 DreamFight Inc. All rights reserved.</p>
+        </footer>
+      </div>
+    </main>
+  );
+};
+
+export default IndexPage;
+
+// Include fonts in the page <head>
+export function Head() {
+  return (
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Manrope:wght@400;800&display=swap"
+        rel="stylesheet"
+      />
+    </>
+  );
+}

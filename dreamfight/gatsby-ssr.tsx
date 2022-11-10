@@ -7,6 +7,6 @@ export const onPreRenderHTML: GatsbySSR["onPreRenderHTML"] = ({ getHeadComponent
 
   replaceHeadComponents([
     ...headComponents,
-    <title key={key}>Dream Fight</title>
+    <title key={key}>DreamFight</title>
   ])
 }
