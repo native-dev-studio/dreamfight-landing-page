@@ -1,11 +1,14 @@
 import * as React from "react";
 
+import { EmailForm } from "../components/EmailForm";
+
 import logo from "../images/logo@2x.png";
 import fightpassVideoSrc from "../images/fightpass.mp4";
 import badgeSrc from "../images/badge.png";
 import bgSrc from "../images/bg.webp";
 import tennisStarSrc from "../images/tennis-star.webp";
-import { EmailForm } from "../components/EmailForm";
+import floatingButtonsSrc from "../images/floating-buttons.png";
+import lifeBarSrc from "../images/life-bar.png";
 
 const IndexPage = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -24,79 +27,89 @@ const IndexPage = () => {
   }, []);
 
   return (
-    <main
-      style={{
-        background: `url(${bgSrc}) no-repeat center`,
-        backgroundSize: "contain",
-        backgroundPositionY: -90,
-        width: "100%",
-      }}
-    >
-      <div className="container">
-        <section
-          style={{
-            width: "50%",
-            padding: "0 36px",
-          }}
-        >
-          <img src={logo} width="500px" className="logo" />
+    <>
+      <div
+        className="background"
+        style={{
+          backgroundImage: `url(${bgSrc})`,
+        }}
+      >
+        <div className="background-container">
+          <img
+            src={tennisStarSrc}
+            alt="Tennis player"
+            className="background-tennis-player"
+          />
 
-          <div style={{}}>
-            <h1 className="title">
-              Get in the g<span className="gradient-text">ame</span>
-            </h1>
+          <img
+            src={lifeBarSrc}
+            alt="Life bar"
+            className="background-life-bar"
+          />
 
-            <p className="content">
-              We're building a revolutionary experience that incorporates fan
-              favorite elements of fantasy, speculation, and competitive gaming
-              into a thrilling game augmented over live broadcast.
-            </p>
-          </div>
-        </section>
-
-        <section
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            marginTop: 160,
-            padding: "0 36px",
-            alignItems: "top",
-            justifyContent: "center",
-          }}
-        >
-          <video
-            ref={videoRef}
-            controls={false}
-            autoPlay
-            loop={false}
-            muted
-            className="fightpass-video"
-            // @note Disable right clicking on the video and showing controls
-            onContextMenu={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <source src={fightpassVideoSrc} type="video/mp4" />
-          </video>
-
-          <div style={{ width: "50%" }}>
-            <h2 className="subtitle">Get your fight pass</h2>
-            <p className="content">
-              Sign up to mint your early access NFT and play the first ever
-              DreamFight game! We’ll be hosting fight nights and inviting our
-              ticket holders to test our upcoming alpha.
-            </p>
-
-            <EmailForm />
-          </div>
-        </section>
-
-        <footer className="footer">
-          <img src={badgeSrc} alt="DF badge" className="footer-badge" />
-          <p className="content">© 2022 DreamFight Inc. All rights reserved.</p>
-        </footer>
+          <img
+            src={floatingButtonsSrc}
+            alt="Game buttons"
+            className="background-floating-buttons"
+          />
+        </div>
       </div>
-    </main>
+
+      <main className="main">
+        <div className="container">
+          <section className="intro-section">
+            <img src={logo} className="logo" />
+
+            <div style={{}}>
+              <h1 className="title">
+                Get in the g<span className="gradient-text">ame</span>
+              </h1>
+
+              <p className="content" style={{ maxWidth: 500 }}>
+                We're building a revolutionary experience that incorporates fan
+                favorite elements of fantasy, speculation, and competitive
+                gaming into a thrilling game augmented over live broadcast.
+              </p>
+            </div>
+          </section>
+
+          <section className="signup-section">
+            <video
+              ref={videoRef}
+              controls={false}
+              autoPlay
+              loop={false}
+              muted
+              className="fightpass-video"
+              // @note Disable right clicking on the video and showing controls
+              onContextMenu={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <source src={fightpassVideoSrc} type="video/mp4" />
+            </video>
+
+            <div className="signup-section-content">
+              <h2 className="subtitle">Get your fight pass</h2>
+              <p className="content">
+                Sign up to mint your early access NFT and play the first ever
+                DreamFight game! We’ll be hosting fight nights and inviting our
+                ticket holders to test our upcoming alpha.
+              </p>
+
+              <EmailForm />
+            </div>
+          </section>
+
+          <footer className="footer">
+            <img src={badgeSrc} alt="DF badge" className="footer-badge" />
+            <p className="content">
+              © 2022 DreamFight Inc. All rights reserved.
+            </p>
+          </footer>
+        </div>
+      </main>
+    </>
   );
 };
 
