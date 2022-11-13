@@ -253,4 +253,9 @@
     -webkit-text-fill-color: unset;
     -moz-text-fill-color: unset;
   }
+
+  input#mce-EMAIL,
+  input#mc-embedded-subscribe {
+    height: 54px;
+  }
 }
