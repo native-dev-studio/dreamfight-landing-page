@@ -103,26 +103,25 @@
 .background-tennis-player {
   display: block;
   position: absolute;
-  left: 50%;
-  top: 10%;
-  width: 500px;
-  transform: translateX(-100px);
+  top: 101px;
+  left: 49.07407407%; /* 848 / 1728 */
+  width: 33.50694444%; /* 579 / 1728 */
 }
 
 .background-life-bar {
   display: block;
-  width: 180px;
+  width: 10.41666667%; /* 180 / 1728 */
   position: absolute;
-  right: 14%;
-  top: 50px;
+  left: 76.33101852%;
+  top: 98px;
 }
 
 .background-floating-buttons {
   display: block;
-  width: 300px;
+  width: 17.36111111%; /* 300/1728 */
   position: absolute;
-  right: 10%;
-  top: 120px;
+  left: 70.71759259%;
+  top: 183px;
 }
 
 .gradient-text {
@@ -219,7 +218,8 @@
   .background {
     background-size: cover;
     background-position-y: 100px;
-    height: 50%;
+    max-width: 1728px;
+    height: 100%;
   }
 
   .background-container {
@@ -228,16 +228,16 @@
   }
 
   .background-tennis-player {
-    left: -20%;
+    left: 10.94147583%; /* 43/393 */
+    top: 118px;
     transform: rotateY(180deg);
-    width: 350px;
-    top: 120px;
+    width: 44.52926209%; /* 175/393 */
   }
 
   .background-life-bar {
-    right: 50px;
-    width: 100px;
-    top: 100px;
+    left: 65.13994911%; /* 256/393 */
+    width: 25.95419847%; /* 102/393 */
+    top: 109px;
   }
 
   .background-floating-buttons {
