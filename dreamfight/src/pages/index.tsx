@@ -125,6 +125,20 @@ export function Head() {
         href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Manrope:wght@400;800&display=swap"
         rel="stylesheet"
       />
+
+      <script
+        src="https://www.googletagmanager.com/gtag/js?id=G-MD22TX6MFD"
+        async
+      />
+
+      <script>
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-MD22TX6MFD');
+        `}
+      </script>
     </>
   );
 }
