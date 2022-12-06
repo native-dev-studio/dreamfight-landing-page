@@ -16,9 +16,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tensorflow-models/coco-ssd": "^2.2.2",
-    "@tensorflow/tfjs": "^3.20.0",
-    "fp-ts": "^2.13.1",
     "gatsby": "^4.24.5",
     "gatsby-background-image": "^1.6.0",
     "gatsby-plugin-google-tagmanager": "^5.2.0",
@@ -28,12 +25,8 @@
     "gatsby-source-filesystem": "^4.14.0",
     "gatsby-transformer-sharp": "^4.14.0",
     "gbimage-bridge": "^0.2.1",
-    "hls.js": "^1.2.3",
-    "pixi.js": "^6.4.2",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "rx-ease": "^2.0.0",
-    "rxjs": "^7.5.6"
+    "react-dom": "^17.0.1"
   },
   "devDependencies": {
     "@types/node": "^17.0.31",
