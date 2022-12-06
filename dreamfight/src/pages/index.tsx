@@ -62,13 +62,11 @@ const IndexPage = () => {
 
             <div style={{}}>
               <h1 className="title">
-                Get in the g<span className="gradient-text">ame</span>
+                A new era in g<span className="gradient-text">aming</span>
               </h1>
 
               <p className="content" style={{ maxWidth: 500 }}>
-                We're building a revolutionary experience that incorporates fan
-                favorite elements of fantasy, speculation, and competitive
-                gaming into a thrilling game augmented over live broadcast.
+                DreamFight is a radically new strategy game played over live sports broadcast. Summon your team of champions to fight for the ultimate victory and earn your share of the prize!
               </p>
             </div>
           </section>
@@ -90,12 +88,9 @@ const IndexPage = () => {
             </video>
 
             <div className="signup-section-content">
-              <h2 className="subtitle">Get your fight pass</h2>
+              <h2 className="subtitle">Get your Fight Pass</h2>
               <p className="content">
-                Sign up to mint your early access NFT and play the first ever
-                DreamFight game! We’ll be hosting fight nights and inviting our
-                ticket holders to test our upcoming alpha.
-              </p>
+                <span className='font-bold'>Early access planned for 2023.</span> Join our Beta to get a headstart over new gameplay mechanics on the world's first live stream competitive game</p>
 
               <EmailForm />
             </div>
