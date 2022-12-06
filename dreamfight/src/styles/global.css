@@ -19,14 +19,15 @@
   }
 
   .title {
-    color: #FFFFFF;
+    /* color: #FFFFFF; */
 
     font-family: 'League Gothic';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 130px;
+    @apply lg:text-8xl md:text-7xl text-white;
+    /* font-style: normal; */
+    /* font-weight: 400; */
+    /* font-size: 120px; */
     line-height: 130%;
-    letter-spacing: -0.02em;
+    /* letter-spacing: -0.02em; */
   }
 
   .content {
