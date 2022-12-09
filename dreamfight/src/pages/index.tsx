@@ -1,31 +1,17 @@
 import * as React from "react";
 
+import { CardVideo } from "../components/CardVideo";
 import { EmailForm } from "../components/EmailForm";
+import { HeadFonts } from "../components/HeadFonts";
+import { Footer } from "../components/Footer";
 
 import logo from "../images/logo@2x.png";
-import fightpassVideoSrc from "../images/fightpass.mp4";
-import badgeSrc from "../images/badge.png";
 import bgSrc from "../images/bg.webp";
 import tennisStarSrc from "../images/tennis-star.webp";
 import floatingButtonsSrc from "../images/floating-buttons.png";
 import lifeBarSrc from "../images/life-bar.png";
 
 const IndexPage = () => {
-  const videoRef = React.useRef<HTMLVideoElement>(null);
-
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      if (videoRef.current) {
-        videoRef.current.currentTime = 0;
-        videoRef.current.play();
-      }
-    }, 10_000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
   return (
     <>
       <div
@@ -72,20 +58,9 @@ const IndexPage = () => {
           </section>
 
           <section className="signup-section">
-            <video
-              ref={videoRef}
-              controls={false}
-              autoPlay
-              loop={false}
-              muted
-              className="fightpass-video"
-              // @note Disable right clicking on the video and showing controls
-              onContextMenu={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <source src={fightpassVideoSrc} type="video/mp4" />
-            </video>
+            <div className="w-2/4 mr-24">
+              <CardVideo />
+            </div>
 
             <div className="signup-section-content">
               <h2 className="subtitle">Get your Fight Pass</h2>
@@ -96,12 +71,7 @@ const IndexPage = () => {
             </div>
           </section>
 
-          <footer className="footer">
-            <img src={badgeSrc} alt="DF badge" className="footer-badge" />
-            <p className="content">
-              © 2022 DreamFight Inc. All rights reserved.
-            </p>
-          </footer>
+          <Footer />
         </div>
       </main>
     </>
@@ -112,14 +82,5 @@ export default IndexPage;
 
 // Include fonts in the page <head>
 export function Head() {
-  return (
-    <>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Manrope:wght@400;800&display=swap"
-        rel="stylesheet"
-      />
-    </>
-  );
+  return <HeadFonts />;
 }
