@@ -57,6 +57,14 @@ const config = {
         // selfHostedOrigin: "https://dreamfight.io",
       },
     },
+    {
+      resolve: 'gatsby-plugin-react-svg',
+      options: {
+        rule: {
+          include: /\.svg$/
+        }
+      }
+    },
     'gatsby-plugin-image',
     'gatsby-plugin-postcss',
     'gatsby-plugin-sharp',
