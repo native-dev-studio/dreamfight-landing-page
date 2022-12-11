@@ -58,7 +58,7 @@ const IndexPage = () => {
           </section>
 
           <section className="signup-section">
-            <div className="w-2/4 mr-24">
+            <div className="w-4/4 md:w-2/4 sm:mr-24 m-auto">
               <CardVideo />
             </div>
 
