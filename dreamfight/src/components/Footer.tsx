@@ -16,14 +16,14 @@ export function Footer() {
         <a href='https://twitter.com/dreamfightgame' target='_blank'>
           <TwitterIcon className='w-5 sm:w-10' />
         </a>
-        <a href='https://www.twitch.tv/dreamfightgame' target='_blank'>
-          <TwitchIcon className='w-5 sm:w-10' />
-        </a>
         <a href='https://www.youtube.com/@dreamfightgame/' target='_blank'>
           <YoutubeIcon className='w-5 sm:w-10' />
         </a>
         <a href='https://www.instagram.com/dreamfightgame/' target='_blank'>
           <InstagramIcon className='w-5 sm:w-10' />
+        </a>
+        <a href='https://www.twitch.tv/dreamfightgame' target='_blank'>
+          <TwitchIcon className='w-5 sm:w-10' />
         </a>
       </div>
     </footer>
