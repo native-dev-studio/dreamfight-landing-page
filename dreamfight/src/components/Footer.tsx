@@ -8,11 +8,11 @@ import InstagramIcon from '../images/icon-instagram.svg';
 export function Footer() {
   return (
     <footer className="flex flex-col gap-5 md:flex-row items-center justify-between mt-20 mb-10 mx-10">
-      <div className='flex text-sm lg:text-md items-center'>
-        <img src={badgeSrc} alt="DF badge" className="w-7 md:w-10 mr-3" />
-        <p>© 2022 DreamFight Inc. All rights reserved.</p>
+      <div className='flex items-center flex-col sm:flex-row gap-3'>
+        <img src={badgeSrc} alt="DF badge" className="w-10 sm:w-7 md:w-10" />
+        <p className='text-sm sm:text-md md:text-lg'>© 2022 DreamFight Inc. All rights reserved.</p>
       </div>
-      <p>
+      <p className='text-sm text-sm md:text-lg'>
         Contact: <a href='mailto:workwith@dreamfight.io' className='text-purple'>workwith@dreamfight.io</a>
       </p>
       <div className='flex gap-5'>
