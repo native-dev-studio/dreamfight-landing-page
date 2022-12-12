@@ -7,6 +7,8 @@ export function CardVideo() {
       controls={false}
       autoPlay
       loop
+      /// Allows video to play automatically on iOS mobile browser
+      playsInline
       muted
       /// Disable right clicking on the video and showing controls
       onContextMenu={(e) => {
