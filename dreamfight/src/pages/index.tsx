@@ -47,7 +47,7 @@ const IndexPage = () => {
             <img src={logo} className="logo" />
 
             <div style={{}}>
-              <h1 className="title">
+              <h1 className="title whitespace-nowrap">
                 A new era in g<span className="gradient-text">aming</span>
               </h1>
 
