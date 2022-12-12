@@ -22,7 +22,7 @@
     /* color: #FFFFFF; */
 
     font-family: 'League Gothic';
-    @apply lg:text-8xl md:text-7xl text-white;
+    @apply lg:text-8xl md:text-7xl text-6xl text-white;
     /* font-style: normal; */
     /* font-weight: 400; */
     /* font-size: 120px; */
