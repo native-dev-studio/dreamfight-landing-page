@@ -1,5 +1,5 @@
 import React from "react";
-import fightpassVideoSrc from "../images/fightpass.mp4";
+import fightpassVideoSrc from "../images/fightpass_v2.mp4";
 
 export function CardVideo() {
   return (
