@@ -86,9 +86,16 @@ export function Head(props: any) {
   /// NOTE: OG images are only supported on production for now
   const ogImage = `https://dreamfight.io/${ogImageSrc}`;
 
+  const tagline     = "DreamFight | A new era in gaming";
+  const description = "DreamFight is a radically new strategy game played on top of live sports broadcast. Play as your favorite champions and fight!";
+
   return (
     <>
+      <title key={0}>DreamFight</title>,
       <HeadFonts />
+      <meta property="og:title" content={tagline} />,
+      <meta property="og:type" content="website" />,
+      <meta property="og:description" content={description} />,
       <meta property="og:image" content={ogImage} />,
       <meta property="og:image:width" content="400" />,
       <meta property="og:image:height" content="50" />,
