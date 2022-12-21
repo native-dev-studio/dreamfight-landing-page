@@ -10,6 +10,7 @@ import bgSrc from "../images/bg.webp";
 import tennisStarSrc from "../images/tennis-star.webp";
 import floatingButtonsSrc from "../images/floating-buttons.png";
 import lifeBarSrc from "../images/life-bar.png";
+import ogImageSrc from "../images/og-image-v3.png";
 
 const IndexPage = () => {
   return (
@@ -81,6 +82,16 @@ const IndexPage = () => {
 export default IndexPage;
 
 // Include fonts in the page <head>
-export function Head() {
-  return <HeadFonts />;
+export function Head(props: any) {
+  /// NOTE: OG images are only supported on production for now
+  const ogImage = `https://dreamfight.io/${ogImageSrc}`;
+
+  return (
+    <>
+      <HeadFonts />
+      <meta property="og:image" content={ogImage} />,
+      <meta property="og:image:width" content="400" />,
+      <meta property="og:image:height" content="50" />,
+    </>
+  )
 }
