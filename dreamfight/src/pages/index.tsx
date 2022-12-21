@@ -46,17 +46,19 @@ const IndexPage = () => {
         <div className="container">
           <section className="intro-section">
             <img src={logo} className="logo" />
-
-            <div style={{}}>
-              <h1 className="title whitespace-nowrap">
-                A new era in g<span className="gradient-text">aming</span>
-              </h1>
-
-              <p className="content" style={{ maxWidth: 500 }}>
-                DreamFight is a radically new strategy game played over live sports broadcast. Summon your team of champions to fight for the ultimate victory and earn your share of the prize!
-              </p>
-            </div>
           </section>
+
+          <div className="px-9">
+            <h1 className="title whitespace-nowrap">
+              A new era in g<span className="gradient-text">aming</span>
+            </h1>
+
+            <p className="content" style={{ maxWidth: 500 }}>
+              DreamFight is a radically new strategy game played over live
+              sports broadcast. Summon your team of champions to fight for the
+              ultimate victory and earn your share of the prize!
+            </p>
+          </div>
 
           <section className="signup-section">
             <div className="w-4/4 md:w-2/4 sm:mr-24 m-auto">
@@ -66,7 +68,12 @@ const IndexPage = () => {
             <div className="signup-section-content">
               <h2 className="subtitle">Get your Fight Pass</h2>
               <p className="content">
-                <span className='font-bold'>Early access planned for 2023.</span> Join our Beta to get a headstart over new gameplay mechanics on the world's first live stream competitive game</p>
+                <span className="font-bold">
+                  Early access planned for 2023.
+                </span>{" "}
+                Join our Beta to get a headstart over new gameplay mechanics on
+                the world's first live stream competitive game
+              </p>
 
               <EmailForm />
             </div>
