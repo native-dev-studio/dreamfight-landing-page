@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkdream_fight=self.webpackChunkdream_fight||[]).push([[577],{5277:function(e,t,n){n.r(t);var u=n(7294);t.default=function(){return u.createElement("div",null)}}}]);
+//# sourceMappingURL=component---src-pages-pong-tsx-0a17ee5739879ebd5f58.js.map
