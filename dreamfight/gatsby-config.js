@@ -4,6 +4,7 @@ const config = {
   siteMetadata: {
     siteUrl: `https://www.yourdomain.tld`,
   },
+  pathPrefix: 'dreamfight-landing-page',
   plugins: [
     {
       resolve: `gatsby-source-filesystem`,
