@@ -2,7 +2,7 @@ const path = require('path');
 
 const config = {
   siteMetadata: {
-    siteUrl: `https://www.yourdomain.tld`,
+    siteUrl: `https://dreamfight.io`,
   },
   pathPrefix: 'dreamfight-landing-page',
   plugins: [
@@ -11,6 +11,13 @@ const config = {
       options: {
         name: `images`,
         path: path.join(__dirname, `src`, `images`),
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `pages`,
+        path: path.join(__dirname, `src`, `pages`),
       },
     },
     {
